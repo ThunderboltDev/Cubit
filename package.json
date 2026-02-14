@@ -25,6 +25,7 @@
 		"dexie-react-hooks": "^4.2.0",
 		"react": "^19.0.0",
 		"react-dom": "^19.0.0",
+		"react-hotkeys-hook": "^5.2.4",
 		"scramble-display": "^0.59.1",
 		"tailwind-merge": "^2.6.0",
 		"zod": "^3.24.2",

@@ -1,5 +1,5 @@
 {
-	"include": ["**/*.ts", "**/*.tsx", "src/components/catch-boundary.tsx"],
+	"include": ["**/*.ts", "**/*.tsx", "src/components/app/catch-boundary.tsx"],
 	"compilerOptions": {
 		"strict": true,
 		"esModuleInterop": true,

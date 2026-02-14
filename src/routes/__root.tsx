@@ -1,10 +1,10 @@
 /// <reference types="vite/client" />
 import { createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
-import type * as React from "react";
 import appCss from "@/app.css?url";
-import { DefaultCatchBoundary } from "@/components/catch-boundary";
-import { NotFound } from "@/components/not-found";
+import { DefaultCatchBoundary } from "@/components/app/catch-boundary";
+import { NotFound } from "@/components/app/not-found";
+import { Providers } from "@/components/app/providers";
 import { seo } from "@/lib/seo";
 
 export const Route = createRootRoute({
@@ -64,7 +64,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <HeadContent />
       </head>
       <body>
-        {children}
+        <Providers>{children}</Providers>
         <TanStackRouterDevtools position="bottom-right" />
         <Scripts />
       </body>
