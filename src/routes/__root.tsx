@@ -7,6 +7,9 @@ import { NotFound } from "@/components/app/not-found";
 import { Providers } from "@/components/app/providers";
 import { seo } from "@/lib/seo";
 
+import "@fontsource-variable/nunito/wght.css";
+import "@fontsource-variable/jetbrains-mono/wght.css";
+
 export const Route = createRootRoute({
   head: () => ({
     meta: [
@@ -15,12 +18,13 @@ export const Route = createRootRoute({
       },
       {
         name: "viewport",
-        content: "width=device-width, initial-scale=1",
+        content:
+          "width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no",
       },
       ...seo({
-        title:
-          "TanStack Start | Type-Safe, Client-First, Full-Stack React Framework",
-        description: `TanStack Start is a type-safe, client-first, full-stack React framework. `,
+        title: "Cubit — Speedcubing Timer",
+        description:
+          "A fast, beautiful speedcubing timer. Track solves, view statistics, and improve your times.",
       }),
     ],
     links: [

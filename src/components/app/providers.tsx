@@ -1,14 +1,15 @@
 "use client";
 
-import { type PropsWithChildren, useEffect, useState } from "react";
+import { type PropsWithChildren, useEffect } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
-
-type Theme = "light" | "dark" | "system";
+import { ScrambleProvider } from "@/contexts/scramble";
+import { useSettingsStore } from "@/stores/settings";
 
 export function Providers({ children }: PropsWithChildren) {
-  const [_theme, setTheme] = useState<Theme>("system");
+  const theme = useSettingsStore((store) => store.theme);
+  const setTheme = useSettingsStore((store) => store.setTheme);
 
-  const applyTheme = (newTheme: Theme) => {
+  const applyTheme = (newTheme: typeof theme) => {
     const root = document.documentElement;
     root.classList.remove("light", "dark");
 
@@ -20,38 +21,28 @@ export function Providers({ children }: PropsWithChildren) {
     } else {
       root.classList.add(newTheme);
     }
-
-    localStorage.setItem("theme", newTheme);
   };
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: initial theme load
   useEffect(() => {
-    const savedTheme = localStorage.getItem("theme") as Theme | null;
-    const initialTheme = savedTheme ?? "system";
-
-    setTheme(initialTheme);
-    applyTheme(initialTheme);
+    applyTheme(theme);
 
     const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
     const handleChange = () => {
-      if (localStorage.getItem("theme") === "system") {
+      if (useSettingsStore.getState().theme === "system") {
         applyTheme("system");
       }
     };
 
     mediaQuery.addEventListener("change", handleChange);
     return () => mediaQuery.removeEventListener("change", handleChange);
-  }, []);
+  }, [theme]);
 
-  const toggleLightDark = () => {
-    setTheme((prev) => {
-      const next = prev === "dark" ? "light" : "dark";
-      applyTheme(next);
-      return next;
-    });
+  const toggleTheme = () => {
+    setTheme(theme === "dark" ? "light" : "dark");
   };
 
-  useHotkeys("l", toggleLightDark, { preventDefault: true });
+  useHotkeys("l", toggleTheme, { preventDefault: true });
 
-  return <>{children}</>;
+  return <ScrambleProvider>{children}</ScrambleProvider>;
 }

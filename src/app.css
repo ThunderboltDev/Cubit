@@ -25,6 +25,9 @@
   --success: oklch(0.6 0.16 152);
 
   --radius: 0.75rem;
+
+  --font-sans: "Nunito Variable", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono Variable", monospace;
 }
 
 .dark {
@@ -115,6 +118,8 @@
   body {
     @apply min-h-screen bg-background text-foreground;
     @apply antialiased overflow-x-hidden;
+
+    font-family: var(--font-sans);
   }
 
   a {
@@ -158,6 +163,18 @@
   &:hover::before {
     @apply left-[75%] w-6;
   }
+}
+
+@utility pb-mobile-nav {
+  padding-bottom: calc(4rem + env(safe-area-inset-bottom, 0px));
+}
+
+@utility transition-fast {
+  @apply transition-all duration-250 ease-linear;
+}
+
+@utility transition-slow {
+  @apply transition-all duration-450 ease-linear;
 }
 
 @utility wrapper-* {

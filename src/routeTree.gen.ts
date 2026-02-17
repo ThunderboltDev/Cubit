@@ -9,50 +9,227 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as IndexRouteImport } from './routes/index'
+import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as PageRouteImport } from './routes/page'
+import { Route as TimerRouteRouteImport } from './routes/_timer/route'
+import { Route as TimerIndexRouteImport } from './routes/_timer/index'
+import { Route as PuzzlesNewRouteImport } from './routes/puzzles/new'
+import { Route as TimerTrainerRouteImport } from './routes/_timer/trainer'
+import { Route as TimerStatisticsRouteImport } from './routes/_timer/statistics'
+import { Route as TimerSolvesRouteImport } from './routes/_timer/solves'
+import { Route as TimerConfigurationRouteImport } from './routes/_timer/configuration'
 
-const IndexRoute = IndexRouteImport.update({
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PageRoute = PageRouteImport.update({
+  id: '/page',
+  path: '/page',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TimerRouteRoute = TimerRouteRouteImport.update({
+  id: '/_timer',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TimerIndexRoute = TimerIndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => TimerRouteRoute,
+} as any)
+const PuzzlesNewRoute = PuzzlesNewRouteImport.update({
+  id: '/puzzles/new',
+  path: '/puzzles/new',
   getParentRoute: () => rootRouteImport,
+} as any)
+const TimerTrainerRoute = TimerTrainerRouteImport.update({
+  id: '/trainer',
+  path: '/trainer',
+  getParentRoute: () => TimerRouteRoute,
+} as any)
+const TimerStatisticsRoute = TimerStatisticsRouteImport.update({
+  id: '/statistics',
+  path: '/statistics',
+  getParentRoute: () => TimerRouteRoute,
+} as any)
+const TimerSolvesRoute = TimerSolvesRouteImport.update({
+  id: '/solves',
+  path: '/solves',
+  getParentRoute: () => TimerRouteRoute,
+} as any)
+const TimerConfigurationRoute = TimerConfigurationRouteImport.update({
+  id: '/configuration',
+  path: '/configuration',
+  getParentRoute: () => TimerRouteRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
+  '/': typeof TimerIndexRoute
+  '/page': typeof PageRoute
+  '/settings': typeof SettingsRoute
+  '/configuration': typeof TimerConfigurationRoute
+  '/solves': typeof TimerSolvesRoute
+  '/statistics': typeof TimerStatisticsRoute
+  '/trainer': typeof TimerTrainerRoute
+  '/puzzles/new': typeof PuzzlesNewRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
+  '/page': typeof PageRoute
+  '/settings': typeof SettingsRoute
+  '/configuration': typeof TimerConfigurationRoute
+  '/solves': typeof TimerSolvesRoute
+  '/statistics': typeof TimerStatisticsRoute
+  '/trainer': typeof TimerTrainerRoute
+  '/puzzles/new': typeof PuzzlesNewRoute
+  '/': typeof TimerIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
+  '/_timer': typeof TimerRouteRouteWithChildren
+  '/page': typeof PageRoute
+  '/settings': typeof SettingsRoute
+  '/_timer/configuration': typeof TimerConfigurationRoute
+  '/_timer/solves': typeof TimerSolvesRoute
+  '/_timer/statistics': typeof TimerStatisticsRoute
+  '/_timer/trainer': typeof TimerTrainerRoute
+  '/puzzles/new': typeof PuzzlesNewRoute
+  '/_timer/': typeof TimerIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/page'
+    | '/settings'
+    | '/configuration'
+    | '/solves'
+    | '/statistics'
+    | '/trainer'
+    | '/puzzles/new'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/page'
+    | '/settings'
+    | '/configuration'
+    | '/solves'
+    | '/statistics'
+    | '/trainer'
+    | '/puzzles/new'
+    | '/'
+  id:
+    | '__root__'
+    | '/_timer'
+    | '/page'
+    | '/settings'
+    | '/_timer/configuration'
+    | '/_timer/solves'
+    | '/_timer/statistics'
+    | '/_timer/trainer'
+    | '/puzzles/new'
+    | '/_timer/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
+  TimerRouteRoute: typeof TimerRouteRouteWithChildren
+  PageRoute: typeof PageRoute
+  SettingsRoute: typeof SettingsRoute
+  PuzzlesNewRoute: typeof PuzzlesNewRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/page': {
+      id: '/page'
+      path: '/page'
+      fullPath: '/page'
+      preLoaderRoute: typeof PageRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_timer': {
+      id: '/_timer'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof TimerRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_timer/': {
+      id: '/_timer/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+      preLoaderRoute: typeof TimerIndexRouteImport
+      parentRoute: typeof TimerRouteRoute
+    }
+    '/puzzles/new': {
+      id: '/puzzles/new'
+      path: '/puzzles/new'
+      fullPath: '/puzzles/new'
+      preLoaderRoute: typeof PuzzlesNewRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_timer/trainer': {
+      id: '/_timer/trainer'
+      path: '/trainer'
+      fullPath: '/trainer'
+      preLoaderRoute: typeof TimerTrainerRouteImport
+      parentRoute: typeof TimerRouteRoute
+    }
+    '/_timer/statistics': {
+      id: '/_timer/statistics'
+      path: '/statistics'
+      fullPath: '/statistics'
+      preLoaderRoute: typeof TimerStatisticsRouteImport
+      parentRoute: typeof TimerRouteRoute
+    }
+    '/_timer/solves': {
+      id: '/_timer/solves'
+      path: '/solves'
+      fullPath: '/solves'
+      preLoaderRoute: typeof TimerSolvesRouteImport
+      parentRoute: typeof TimerRouteRoute
+    }
+    '/_timer/configuration': {
+      id: '/_timer/configuration'
+      path: '/configuration'
+      fullPath: '/configuration'
+      preLoaderRoute: typeof TimerConfigurationRouteImport
+      parentRoute: typeof TimerRouteRoute
     }
   }
 }
 
+interface TimerRouteRouteChildren {
+  TimerConfigurationRoute: typeof TimerConfigurationRoute
+  TimerSolvesRoute: typeof TimerSolvesRoute
+  TimerStatisticsRoute: typeof TimerStatisticsRoute
+  TimerTrainerRoute: typeof TimerTrainerRoute
+  TimerIndexRoute: typeof TimerIndexRoute
+}
+
+const TimerRouteRouteChildren: TimerRouteRouteChildren = {
+  TimerConfigurationRoute: TimerConfigurationRoute,
+  TimerSolvesRoute: TimerSolvesRoute,
+  TimerStatisticsRoute: TimerStatisticsRoute,
+  TimerTrainerRoute: TimerTrainerRoute,
+  TimerIndexRoute: TimerIndexRoute,
+}
+
+const TimerRouteRouteWithChildren = TimerRouteRoute._addFileChildren(
+  TimerRouteRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
+  TimerRouteRoute: TimerRouteRouteWithChildren,
+  PageRoute: PageRoute,
+  SettingsRoute: SettingsRoute,
+  PuzzlesNewRoute: PuzzlesNewRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
