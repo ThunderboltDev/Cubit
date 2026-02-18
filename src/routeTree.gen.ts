@@ -11,7 +11,6 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as UiTestRouteImport } from './routes/ui-test'
 import { Route as SettingsRouteImport } from './routes/settings'
-import { Route as PageRouteImport } from './routes/page'
 import { Route as TimerRouteRouteImport } from './routes/_timer/route'
 import { Route as TimerIndexRouteImport } from './routes/_timer/index'
 import { Route as PuzzlesNewRouteImport } from './routes/puzzles/new'
@@ -28,11 +27,6 @@ const UiTestRoute = UiTestRouteImport.update({
 const SettingsRoute = SettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PageRoute = PageRouteImport.update({
-  id: '/page',
-  path: '/page',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TimerRouteRoute = TimerRouteRouteImport.update({
@@ -72,7 +66,6 @@ const TimerConfigurationRoute = TimerConfigurationRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof TimerIndexRoute
-  '/page': typeof PageRoute
   '/settings': typeof SettingsRoute
   '/ui-test': typeof UiTestRoute
   '/configuration': typeof TimerConfigurationRoute
@@ -82,7 +75,6 @@ export interface FileRoutesByFullPath {
   '/puzzles/new': typeof PuzzlesNewRoute
 }
 export interface FileRoutesByTo {
-  '/page': typeof PageRoute
   '/settings': typeof SettingsRoute
   '/ui-test': typeof UiTestRoute
   '/configuration': typeof TimerConfigurationRoute
@@ -95,7 +87,6 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_timer': typeof TimerRouteRouteWithChildren
-  '/page': typeof PageRoute
   '/settings': typeof SettingsRoute
   '/ui-test': typeof UiTestRoute
   '/_timer/configuration': typeof TimerConfigurationRoute
@@ -109,7 +100,6 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/page'
     | '/settings'
     | '/ui-test'
     | '/configuration'
@@ -119,7 +109,6 @@ export interface FileRouteTypes {
     | '/puzzles/new'
   fileRoutesByTo: FileRoutesByTo
   to:
-    | '/page'
     | '/settings'
     | '/ui-test'
     | '/configuration'
@@ -131,7 +120,6 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/_timer'
-    | '/page'
     | '/settings'
     | '/ui-test'
     | '/_timer/configuration'
@@ -144,7 +132,6 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   TimerRouteRoute: typeof TimerRouteRouteWithChildren
-  PageRoute: typeof PageRoute
   SettingsRoute: typeof SettingsRoute
   UiTestRoute: typeof UiTestRoute
   PuzzlesNewRoute: typeof PuzzlesNewRoute
@@ -164,13 +151,6 @@ declare module '@tanstack/react-router' {
       path: '/settings'
       fullPath: '/settings'
       preLoaderRoute: typeof SettingsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/page': {
-      id: '/page'
-      path: '/page'
-      fullPath: '/page'
-      preLoaderRoute: typeof PageRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_timer': {
@@ -247,7 +227,6 @@ const TimerRouteRouteWithChildren = TimerRouteRoute._addFileChildren(
 
 const rootRouteChildren: RootRouteChildren = {
   TimerRouteRoute: TimerRouteRouteWithChildren,
-  PageRoute: PageRoute,
   SettingsRoute: SettingsRoute,
   UiTestRoute: UiTestRoute,
   PuzzlesNewRoute: PuzzlesNewRoute,
