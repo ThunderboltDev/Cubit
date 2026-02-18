@@ -1,12 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Badge } from "@/components/ui/badge";
 import {
-  Field,
   FieldDescription,
   FieldGroup,
+  FieldItem,
+  FieldLabel,
   FieldLegend,
   FieldSet,
-  FieldTitle,
 } from "@/components/ui/field";
 import {
   Page,
@@ -53,9 +53,9 @@ function PuzzleConfigurationPage() {
       <FieldSet>
         <FieldLegend>Inspection</FieldLegend>
         <FieldGroup>
-          <Field orientation="horizontal">
+          <FieldItem orientation="horizontal">
             <div className="flex-1">
-              <FieldTitle>Enable Inspection</FieldTitle>
+              <FieldLabel>Enable Inspection</FieldLabel>
               <FieldDescription>
                 15 second inspection before solve starts
               </FieldDescription>
@@ -66,12 +66,12 @@ function PuzzleConfigurationPage() {
                 updatePuzzle(currentPuzzle.id, { inspectionEnabled: checked })
               }
             />
-          </Field>
+          </FieldItem>
 
           {currentPuzzle.inspectionEnabled && (
-            <Field orientation="horizontal">
+            <FieldItem orientation="horizontal">
               <div className="flex-1">
-                <FieldTitle>Inspection Duration</FieldTitle>
+                <FieldLabel>Inspection Duration</FieldLabel>
               </div>
               <div className="flex items-center gap-3">
                 <Slider
@@ -87,11 +87,14 @@ function PuzzleConfigurationPage() {
                     })
                   }
                 />
-                <Badge variant="soft" className="w-14 justify-center font-mono">
+                <Badge
+                  variant="transparent"
+                  className="w-14 justify-center font-mono"
+                >
                   {currentPuzzle.inspectionDuration}s
                 </Badge>
               </div>
-            </Field>
+            </FieldItem>
           )}
         </FieldGroup>
       </FieldSet>
@@ -99,9 +102,9 @@ function PuzzleConfigurationPage() {
       <FieldSet>
         <FieldLegend>Multiphase</FieldLegend>
         <FieldGroup>
-          <Field orientation="horizontal">
+          <FieldItem orientation="horizontal">
             <div className="flex-1">
-              <FieldTitle>Enable Multiphase</FieldTitle>
+              <FieldLabel>Enable Multiphase</FieldLabel>
               <FieldDescription>
                 Split solve into multiple timed phases
               </FieldDescription>
@@ -112,12 +115,12 @@ function PuzzleConfigurationPage() {
                 updatePuzzle(currentPuzzle.id, { multiphaseEnabled: checked })
               }
             />
-          </Field>
+          </FieldItem>
 
           {currentPuzzle.multiphaseEnabled && (
-            <Field orientation="horizontal">
+            <FieldItem orientation="horizontal">
               <div className="flex-1">
-                <FieldTitle>Phase Count</FieldTitle>
+                <FieldLabel>Phase Count</FieldLabel>
               </div>
               <div className="flex items-center gap-3">
                 <Slider
@@ -132,11 +135,14 @@ function PuzzleConfigurationPage() {
                     })
                   }
                 />
-                <Badge variant="soft" className="w-8 justify-center font-mono">
+                <Badge
+                  variant="transparent"
+                  className="w-8 justify-center font-mono"
+                >
                   {currentPuzzle.multiphaseCount}
                 </Badge>
               </div>
-            </Field>
+            </FieldItem>
           )}
         </FieldGroup>
       </FieldSet>
@@ -144,9 +150,9 @@ function PuzzleConfigurationPage() {
       <FieldSet>
         <FieldLegend>Statistics</FieldLegend>
         <FieldGroup>
-          <Field orientation="horizontal">
+          <FieldItem orientation="horizontal">
             <div className="flex-1">
-              <FieldTitle>Trim Percentage</FieldTitle>
+              <FieldLabel>Trim Percentage</FieldLabel>
               <FieldDescription>
                 Percentage of best/worst times to trim from averages
               </FieldDescription>
@@ -164,20 +170,23 @@ function PuzzleConfigurationPage() {
                   })
                 }
               />
-              <Badge variant="soft" className="w-10 justify-center font-mono">
+              <Badge
+                variant="transparent"
+                className="w-10 justify-center font-mono"
+              >
                 {currentPuzzle.trimPercentage}%
               </Badge>
             </div>
-          </Field>
+          </FieldItem>
         </FieldGroup>
       </FieldSet>
 
       <FieldSet>
         <FieldLegend>Scramble Preview</FieldLegend>
         <FieldGroup>
-          <Field orientation="horizontal">
+          <FieldItem orientation="horizontal">
             <div className="flex-1">
-              <FieldTitle>Show Scramble Preview</FieldTitle>
+              <FieldLabel>Show Scramble Preview</FieldLabel>
               <FieldDescription>
                 Display visual puzzle state next to scramble
               </FieldDescription>
@@ -188,11 +197,11 @@ function PuzzleConfigurationPage() {
                 updatePuzzle(currentPuzzle.id, { scramblePreview: checked })
               }
             />
-          </Field>
+          </FieldItem>
 
           {currentPuzzle.scramblePreview && (
-            <Field orientation="horizontal">
-              <FieldTitle>Visualization</FieldTitle>
+            <FieldItem orientation="horizontal">
+              <FieldLabel>Visualization</FieldLabel>
               <Select
                 value={currentPuzzle.scramblePreviewVisualization}
                 onValueChange={(value) =>
@@ -209,7 +218,7 @@ function PuzzleConfigurationPage() {
                   <SelectItem value="3d">3D Cube</SelectItem>
                 </SelectContent>
               </Select>
-            </Field>
+            </FieldItem>
           )}
         </FieldGroup>
       </FieldSet>

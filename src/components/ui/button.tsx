@@ -21,7 +21,6 @@ const defaultThemes = {
     "bg-muted text-foreground hover:bg-secondary hover:text-secondary-foreground",
   accent:
     "bg-accent text-white hover:text-[color-mix(in_oklch,var(--color-white)_90%,black_8%)] hover:bg-[color-mix(in_oklch,var(--color-accent)_90%,black_8%)]",
-  gold: "bg-gold text-white hover:text-[color-mix(in_oklch,var(--color-white)_90%,black_8%)] hover:bg-[color-mix(in_oklch,var(--color-gold)_90%,black_8%)]",
   info: "bg-info text-white hover:text-[color-mix(in_oklch,var(--color-white)_90%,black_8%)] hover:bg-[color-mix(in_oklch,var(--color-info)_90%,black_8%)]",
   success:
     "bg-success text-white hover:text-[color-mix(in_oklch,var(--color-white)_90%,black_8%)] hover:bg-[color-mix(in_oklch,var(--color-success)_90%,black_8%)]",
@@ -33,9 +32,7 @@ const defaultThemes = {
 
 const themeClassName = {
   default: "focus-visible:ring-secondary-foreground/25",
-  muted: "focus-visible:ring-muted-foreground/25",
   accent: "focus-visible:ring-accent/25",
-  gold: "focus-visible:ring-gold/25",
   info: "focus-visible:ring-info/25",
   success: "focus-visible:ring-success/25",
   danger: "focus-visible:ring-danger/25",
@@ -45,7 +42,6 @@ const themeClassName = {
 const ghostThemes = {
   default: "hover:bg-muted",
   accent: "hover:bg-accent hover:text-white",
-  gold: "hover:bg-gold hover:text-white",
   info: "hover:bg-info hover:text-white",
   success: "hover:bg-success hover:text-white",
   danger: "hover:bg-danger hover:text-white",
@@ -55,7 +51,6 @@ const ghostThemes = {
 const transparentThemes = {
   default: "text-foreground hover:bg-muted/50",
   accent: "text-accent hover:bg-accent/10",
-  gold: "text-gold hover:bg-gold/10",
   info: "text-info hover:bg-info/10",
   success: "text-success hover:bg-success/10",
   danger: "text-danger hover:bg-danger/10",
@@ -66,7 +61,6 @@ const outlineThemes = {
   default:
     "text-foreground bg-input/30 border-border hover:text-secondary-foreground hover:bg-muted/50",
   accent: "text-accent border-accent hover:bg-accent hover:text-white",
-  gold: "text-gold border-gold hover:bg-gold hover:text-white",
   info: "text-info border-info hover:bg-info hover:text-white",
   success: "text-success border-success hover:bg-success hover:text-white",
   danger: "text-danger border-danger hover:bg-danger hover:text-white",
@@ -83,14 +77,7 @@ const sizeThemes = {
 };
 
 type ButtonProps = ComponentProps<typeof ButtonPrimitive> & {
-  theme?:
-    | "default"
-    | "accent"
-    | "gold"
-    | "info"
-    | "success"
-    | "danger"
-    | "warning";
+  theme?: "default" | "accent" | "info" | "success" | "danger" | "warning";
   size?: "default" | "sm" | "lg" | "icon" | "responsive";
   variant?: "default" | "ghost" | "outline" | "transparent";
 };

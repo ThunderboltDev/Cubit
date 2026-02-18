@@ -17,7 +17,7 @@ import {
 } from "recharts";
 import { Button } from "@/components/ui/button";
 import { Card, CardBody, CardHeader, CardTitle } from "@/components/ui/card";
-import { Field, FieldDescription, FieldLabel } from "@/components/ui/field";
+import { FieldDescription, FieldItem, FieldLabel } from "@/components/ui/field";
 import { Page, PageBody, PageHeader, PageTitle } from "@/components/ui/page";
 import {
   Select,
@@ -272,7 +272,7 @@ function StatisticsPage() {
 
 function StatItem({ label, value }: { label: string; value: string }) {
   return (
-    <Card size="sm">
+    <Card>
       <CardBody className="flex flex-col gap-0.5 p-3">
         <span className="text-xs text-muted-foreground">{label}</span>
         <span className="font-mono text-lg font-semibold">{value}</span>
@@ -325,7 +325,7 @@ function ChartEditor({
 
   return (
     <div className="space-y-6">
-      <Field>
+      <FieldItem>
         <FieldLabel>Chart Type</FieldLabel>
         <Select
           value={config.type}
@@ -349,9 +349,9 @@ function ChartEditor({
             )}
           </SelectContent>
         </Select>
-      </Field>
+      </FieldItem>
 
-      <Field>
+      <FieldItem>
         <FieldLabel>Number of Solves to Show</FieldLabel>
         <div className="space-y-3">
           <div className="flex items-center justify-between">
@@ -375,10 +375,10 @@ function ChartEditor({
         <FieldDescription>
           How many recent solves to display on the chart.
         </FieldDescription>
-      </Field>
+      </FieldItem>
 
       {config.type === "multiphase" && (
-        <Field>
+        <FieldItem>
           <FieldLabel>Phase Number</FieldLabel>
           <Select
             value={String(config.phase ?? 1)}
@@ -397,7 +397,7 @@ function ChartEditor({
               ))}
             </SelectContent>
           </Select>
-        </Field>
+        </FieldItem>
       )}
 
       <div className="flex gap-3 pt-4">

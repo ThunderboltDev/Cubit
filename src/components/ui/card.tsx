@@ -1,17 +1,12 @@
 import type { ComponentProps } from "react";
 import { cn } from "@/lib/utils";
 
-interface CardProps extends ComponentProps<"div"> {
-  size?: "default" | "sm";
-}
-
-function Card({ className, size = "default", ...props }: CardProps) {
+function Card({ className, ...props }: ComponentProps<"div">) {
   return (
     <div
       data-slot="card"
-      data-size={size}
       className={cn(
-        "border border-border bg-secondary gap-6 overflow-hidden rounded-2xl py-6 text-sm has-[>img:first-child]:pt-0 data-[size=sm]:gap-4 data-[size=sm]:py-4 *:[img:first-child]:rounded-t-xl *:[img:last-child]:rounded-b-xl group/card flex flex-col",
+        "border border-border bg-secondary gap-4 overflow-hidden rounded-2xl py-6 text-sm has-[>img:first-child]:pt-0 *:[img:first-child]:rounded-t-xl *:[img:last-child]:rounded-b-xl group/card flex flex-col",
         className,
       )}
       {...props}

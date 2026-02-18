@@ -1,7 +1,7 @@
 import { ChevronDown, Tick02Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import type { ComponentProps, ReactNode } from "react";
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -11,13 +11,24 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 
-type SelectContextType<T> = readonly [T, (value: T) => void];
+type SelectItemData = {
+  value: string;
+  label: ReactNode;
+};
 
-const SelectContext = createContext<SelectContextType<string> | null>(null);
+type SelectContextType = {
+  selectedValue: string | undefined;
+  setSelected: (item: SelectItemData) => void;
+  registerItem: (item: SelectItemData) => void;
+  getLabel: () => ReactNode;
+  isRegistering: boolean;
+};
 
-type SelectProviderProps<T> = {
-  value: T;
-  onValueChange?: (value: T) => void;
+const SelectContext = createContext<SelectContextType | null>(null);
+
+type SelectProviderProps = {
+  value: string | undefined;
+  onValueChange?: (value: string) => void;
   children: ReactNode;
 };
 
@@ -25,16 +36,36 @@ export function SelectProvider({
   value,
   onValueChange,
   children,
-}: SelectProviderProps<string>) {
-  const [state, setState] = useState<string>(value);
+}: SelectProviderProps) {
+  const [selectedValue, setSelectedValue] = useState<string | undefined>(value);
+  const itemsRef = useRef<Map<string, ReactNode>>(new Map());
+  const [, forceUpdate] = useState(0);
 
-  const setSelectedValue = (value: string) => {
-    setState(value);
-    onValueChange?.(value);
+  const registerItem = ({ value, label }: SelectItemData) => {
+    if (!itemsRef.current.has(value)) {
+      itemsRef.current.set(value, label);
+      forceUpdate((n) => n + 1);
+    }
   };
 
+  const setSelected = (item: SelectItemData) => {
+    setSelectedValue(item.value);
+    onValueChange?.(item.value);
+  };
+
+  const getLabel = () =>
+    selectedValue ? itemsRef.current.get(selectedValue) : undefined;
+
   return (
-    <SelectContext.Provider value={[state, setSelectedValue]}>
+    <SelectContext.Provider
+      value={{
+        selectedValue,
+        setSelected,
+        registerItem,
+        getLabel,
+        isRegistering: false,
+      }}
+    >
       {children}
     </SelectContext.Provider>
   );
@@ -42,32 +73,55 @@ export function SelectProvider({
 
 export function useSelect() {
   const context = useContext(SelectContext);
-
-  if (!context) {
-    throw new Error("useSelect must be used within an SelectProvider");
-  }
-
+  if (!context)
+    throw new Error("useSelect must be used within a SelectProvider");
   return context;
 }
 
 type SelectProps = {
-  value: string;
+  value?: string;
   onValueChange?: (value: string) => void;
-} & ComponentProps<typeof DropdownMenu>;
+  children: ReactNode;
+} & Omit<ComponentProps<typeof DropdownMenu>, "children">;
 
-export function Select({ value, onValueChange, ...props }: SelectProps) {
+export function Select({
+  value,
+  onValueChange,
+  children,
+  ...props
+}: SelectProps) {
   return (
     <SelectProvider value={value} onValueChange={onValueChange}>
-      <DropdownMenu {...props} />
+      <RegistrationPass>{children}</RegistrationPass>
+      <DropdownMenu {...props}>{children}</DropdownMenu>
     </SelectProvider>
   );
 }
+
+function RegistrationPass({ children }: { children: ReactNode }) {
+  return (
+    <SelectContext.Consumer>
+      {() => (
+        <div hidden aria-hidden style={{ display: "none" }}>
+          <RegistrationContext.Provider value={true}>
+            {children}
+          </RegistrationContext.Provider>
+        </div>
+      )}
+    </SelectContext.Consumer>
+  );
+}
+
+const RegistrationContext = createContext(false);
 
 export function SelectTrigger({
   children,
   className,
   ...props
 }: ComponentProps<typeof DropdownMenuTrigger>) {
+  const isRegistering = useContext(RegistrationContext);
+  if (isRegistering) return null;
+
   return (
     <DropdownMenuTrigger
       {...props}
@@ -76,7 +130,7 @@ export function SelectTrigger({
           variant="outline"
           theme="default"
           className={cn(
-            "text-secondary-foreground text-responsive! inline-flex gap-2 justify-between items-center px-6 w-full min-w-0 whitespace-normal",
+            "text-secondary-foreground text-responsive! inline-flex gap-2 justify-between items-center px-6 min-w-0 whitespace-normal",
             className,
           )}
         />
@@ -88,16 +142,34 @@ export function SelectTrigger({
   );
 }
 
-export function SelectValue() {
-  const [selectedValue] = useSelect();
+interface SelectValueProps {
+  placeholder?: string;
+}
 
-  return selectedValue;
+export function SelectValue({
+  placeholder = "Select a value",
+}: SelectValueProps) {
+  const isRegistering = useContext(RegistrationContext);
+  const { getLabel, selectedValue } = useSelect();
+  if (isRegistering) return null;
+  const label = getLabel();
+  if (!selectedValue)
+    return <span className="text-muted-foreground">{placeholder}</span>;
+  return <>{label ?? selectedValue}</>;
 }
 
 export function SelectContent({
+  children,
+  className,
   ...props
 }: ComponentProps<typeof DropdownMenuContent>) {
-  return <DropdownMenuContent {...props} />;
+  const isRegistering = useContext(RegistrationContext);
+  if (isRegistering) return <>{children}</>;
+  return (
+    <DropdownMenuContent className={cn("min-w-40", className)} {...props}>
+      {children}
+    </DropdownMenuContent>
+  );
 }
 
 type SelectItemProps = {
@@ -110,13 +182,18 @@ export function SelectItem({
   className,
   ...props
 }: SelectItemProps) {
-  const [selectedValue, setSelectedValue] = useSelect();
+  const { selectedValue, setSelected, registerItem } = useSelect();
+  const isRegistering = useContext(RegistrationContext);
+
+  registerItem({ value, label: children });
+
+  if (isRegistering) return null;
 
   return (
     <DropdownMenuItem
       {...props}
       className={cn("flex justify-between", className)}
-      onClick={() => setSelectedValue(value)}
+      onClick={() => setSelected({ value, label: children })}
     >
       <span className="inline-flex items-center gap-2">{children}</span>
       {selectedValue === value && (

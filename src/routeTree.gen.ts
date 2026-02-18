@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as UiTestRouteImport } from './routes/ui-test'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as PageRouteImport } from './routes/page'
 import { Route as TimerRouteRouteImport } from './routes/_timer/route'
@@ -19,6 +20,11 @@ import { Route as TimerStatisticsRouteImport } from './routes/_timer/statistics'
 import { Route as TimerSolvesRouteImport } from './routes/_timer/solves'
 import { Route as TimerConfigurationRouteImport } from './routes/_timer/configuration'
 
+const UiTestRoute = UiTestRouteImport.update({
+  id: '/ui-test',
+  path: '/ui-test',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SettingsRoute = SettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
@@ -68,6 +74,7 @@ export interface FileRoutesByFullPath {
   '/': typeof TimerIndexRoute
   '/page': typeof PageRoute
   '/settings': typeof SettingsRoute
+  '/ui-test': typeof UiTestRoute
   '/configuration': typeof TimerConfigurationRoute
   '/solves': typeof TimerSolvesRoute
   '/statistics': typeof TimerStatisticsRoute
@@ -77,6 +84,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/page': typeof PageRoute
   '/settings': typeof SettingsRoute
+  '/ui-test': typeof UiTestRoute
   '/configuration': typeof TimerConfigurationRoute
   '/solves': typeof TimerSolvesRoute
   '/statistics': typeof TimerStatisticsRoute
@@ -89,6 +97,7 @@ export interface FileRoutesById {
   '/_timer': typeof TimerRouteRouteWithChildren
   '/page': typeof PageRoute
   '/settings': typeof SettingsRoute
+  '/ui-test': typeof UiTestRoute
   '/_timer/configuration': typeof TimerConfigurationRoute
   '/_timer/solves': typeof TimerSolvesRoute
   '/_timer/statistics': typeof TimerStatisticsRoute
@@ -102,6 +111,7 @@ export interface FileRouteTypes {
     | '/'
     | '/page'
     | '/settings'
+    | '/ui-test'
     | '/configuration'
     | '/solves'
     | '/statistics'
@@ -111,6 +121,7 @@ export interface FileRouteTypes {
   to:
     | '/page'
     | '/settings'
+    | '/ui-test'
     | '/configuration'
     | '/solves'
     | '/statistics'
@@ -122,6 +133,7 @@ export interface FileRouteTypes {
     | '/_timer'
     | '/page'
     | '/settings'
+    | '/ui-test'
     | '/_timer/configuration'
     | '/_timer/solves'
     | '/_timer/statistics'
@@ -134,11 +146,19 @@ export interface RootRouteChildren {
   TimerRouteRoute: typeof TimerRouteRouteWithChildren
   PageRoute: typeof PageRoute
   SettingsRoute: typeof SettingsRoute
+  UiTestRoute: typeof UiTestRoute
   PuzzlesNewRoute: typeof PuzzlesNewRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/ui-test': {
+      id: '/ui-test'
+      path: '/ui-test'
+      fullPath: '/ui-test'
+      preLoaderRoute: typeof UiTestRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/settings': {
       id: '/settings'
       path: '/settings'
@@ -229,6 +249,7 @@ const rootRouteChildren: RootRouteChildren = {
   TimerRouteRoute: TimerRouteRouteWithChildren,
   PageRoute: PageRoute,
   SettingsRoute: SettingsRoute,
+  UiTestRoute: UiTestRoute,
   PuzzlesNewRoute: PuzzlesNewRoute,
 }
 export const routeTree = rootRouteImport

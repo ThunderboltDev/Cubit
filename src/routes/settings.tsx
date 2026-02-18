@@ -1,12 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Badge } from "@/components/ui/badge";
 import {
-  Field,
   FieldDescription,
   FieldGroup,
+  FieldItem,
+  FieldLabel,
   FieldLegend,
   FieldSet,
-  FieldTitle,
 } from "@/components/ui/field";
 import {
   Page,
@@ -47,8 +47,8 @@ function SettingsPage() {
         <FieldSet>
           <FieldLegend>Appearance</FieldLegend>
           <FieldGroup>
-            <Field orientation="horizontal">
-              <FieldTitle>Theme</FieldTitle>
+            <FieldItem orientation="horizontal">
+              <FieldLabel>Theme</FieldLabel>
               <Select
                 value={settings.theme}
                 onValueChange={(value) =>
@@ -66,7 +66,7 @@ function SettingsPage() {
                   <SelectItem value="dark">Dark</SelectItem>
                 </SelectContent>
               </Select>
-            </Field>
+            </FieldItem>
           </FieldGroup>
         </FieldSet>
 
@@ -83,9 +83,9 @@ function SettingsPage() {
               </span>
             </div>
 
-            <Field orientation="horizontal">
+            <FieldItem orientation="horizontal">
               <div className="flex-1">
-                <FieldTitle>Precision</FieldTitle>
+                <FieldLabel>Precision</FieldLabel>
                 <FieldDescription>
                   Decimal places shown on the timer
                 </FieldDescription>
@@ -105,14 +105,17 @@ function SettingsPage() {
                     })
                   }
                 />
-                <Badge variant="soft" className="w-6 justify-center font-mono">
+                <Badge
+                  variant="transparent"
+                  className="w-6 justify-center font-mono"
+                >
                   {settings.timerPrecision}
                 </Badge>
               </div>
-            </Field>
+            </FieldItem>
 
-            <Field orientation="horizontal">
-              <FieldTitle>Time Format</FieldTitle>
+            <FieldItem orientation="horizontal">
+              <FieldLabel>Time Format</FieldLabel>
               <Select
                 value={settings.timeFormat}
                 onValueChange={(value) =>
@@ -131,16 +134,16 @@ function SettingsPage() {
                   </SelectItem>
                 </SelectContent>
               </Select>
-            </Field>
+            </FieldItem>
           </FieldGroup>
         </FieldSet>
 
         <FieldSet>
           <FieldLegend>Timer Behavior</FieldLegend>
           <FieldGroup>
-            <Field orientation="horizontal">
+            <FieldItem orientation="horizontal">
               <div className="flex-1">
-                <FieldTitle>Hold Threshold</FieldTitle>
+                <FieldLabel>Hold Threshold</FieldLabel>
                 <FieldDescription>
                   How long to hold before the timer is ready
                 </FieldDescription>
@@ -158,20 +161,23 @@ function SettingsPage() {
                     })
                   }
                 />
-                <Badge variant="soft" className="w-14 justify-center font-mono">
+                <Badge
+                  variant="transparent"
+                  className="w-14 justify-center font-mono"
+                >
                   {settings.holdThreshold}ms
                 </Badge>
               </div>
-            </Field>
+            </FieldItem>
           </FieldGroup>
         </FieldSet>
 
         <FieldSet>
           <FieldLegend>Feedback</FieldLegend>
           <FieldGroup>
-            <Field orientation="horizontal">
+            <FieldItem orientation="horizontal">
               <div className="flex-1">
-                <FieldTitle>Sound</FieldTitle>
+                <FieldLabel>Sound</FieldLabel>
                 <FieldDescription>Play sounds on events</FieldDescription>
               </div>
               <Switch
@@ -180,12 +186,12 @@ function SettingsPage() {
                   updateSettings({ soundEnabled: checked })
                 }
               />
-            </Field>
+            </FieldItem>
 
             {settings.soundEnabled && (
-              <Field orientation="horizontal">
+              <FieldItem orientation="horizontal">
                 <div className="flex-1">
-                  <FieldTitle>Sound Volume</FieldTitle>
+                  <FieldLabel>Sound Volume</FieldLabel>
                 </div>
                 <div className="flex items-center gap-3">
                   <Slider
@@ -201,18 +207,18 @@ function SettingsPage() {
                     }
                   />
                   <Badge
-                    variant="soft"
+                    variant="transparent"
                     className="w-12 justify-center font-mono"
                   >
                     {Math.round(settings.soundVolume * 100)}%
                   </Badge>
                 </div>
-              </Field>
+              </FieldItem>
             )}
 
-            <Field orientation="horizontal">
+            <FieldItem orientation="horizontal">
               <div className="flex-1">
-                <FieldTitle>Haptic Feedback</FieldTitle>
+                <FieldLabel>Haptic Feedback</FieldLabel>
                 <FieldDescription>
                   Vibrate on timer events (mobile only)
                 </FieldDescription>
@@ -223,7 +229,7 @@ function SettingsPage() {
                   updateSettings({ hapticEnabled: checked })
                 }
               />
-            </Field>
+            </FieldItem>
           </FieldGroup>
         </FieldSet>
       </PageBody>

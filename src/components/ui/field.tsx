@@ -51,7 +51,7 @@ function FieldGroup({ className, ...props }: ComponentProps<"div">) {
 }
 
 const fieldVariants = cva(
-  "data-[invalid=true]:text-destructive gap-2 group/field flex w-full",
+  "data-[invalid=true]:text-destructive gap-1 group/field flex w-full",
   {
     variants: {
       orientation: {
@@ -68,7 +68,7 @@ const fieldVariants = cva(
   },
 );
 
-function Field({
+function FieldItem({
   className,
   orientation = "vertical",
   ...props
@@ -83,19 +83,6 @@ function Field({
   );
 }
 
-function FieldContent({ className, ...props }: ComponentProps<"div">) {
-  return (
-    <div
-      data-slot="field-content"
-      className={cn(
-        "gap-0.5 group/field-content flex flex-1 flex-col leading-snug",
-        className,
-      )}
-      {...props}
-    />
-  );
-}
-
 function FieldLabel({ className, ...props }: ComponentProps<typeof Label>) {
   return (
     <Label
@@ -103,19 +90,6 @@ function FieldLabel({ className, ...props }: ComponentProps<typeof Label>) {
       className={cn(
         "has-data-checked:bg-primary/5 has-data-checked:border-primary/30 dark:has-data-checked:border-primary/20 dark:has-data-checked:bg-primary/10 gap-2 group-data-[disabled=true]/field:opacity-50 has-[>[data-slot=field]]:rounded-lg has-[>[data-slot=field]]:border *:data-[slot=field]:p-2.5 group/field-label peer/field-label flex w-fit leading-snug",
         "has-[>[data-slot=field]]:w-full has-[>[data-slot=field]]:flex-col",
-        className,
-      )}
-      {...props}
-    />
-  );
-}
-
-function FieldTitle({ className, ...props }: ComponentProps<"div">) {
-  return (
-    <div
-      data-slot="field-label"
-      className={cn(
-        "gap-2 text-sm font-medium group-data-[disabled=true]/field:opacity-50 flex w-fit items-center leading-snug",
         className,
       )}
       {...props}
@@ -220,7 +194,7 @@ function FieldError({
 }
 
 export {
-  Field,
+  FieldItem,
   FieldLabel,
   FieldDescription,
   FieldError,
@@ -228,6 +202,4 @@ export {
   FieldLegend,
   FieldSeparator,
   FieldSet,
-  FieldContent,
-  FieldTitle,
 };

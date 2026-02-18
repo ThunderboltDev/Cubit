@@ -11,7 +11,7 @@ import { useState } from "react";
 import { PuzzleIcon } from "@/components/puzzle/icon";
 import { Button } from "@/components/ui/button";
 import { Card, CardBody } from "@/components/ui/card";
-import { Field } from "@/components/ui/field";
+import { FieldItem } from "@/components/ui/field";
 import { Page, PageBody, PageHeader, PageTitle } from "@/components/ui/page";
 import {
   Select,
@@ -153,7 +153,7 @@ function CustomPuzzleForm({
     <form onSubmit={handleSubmit} className="space-y-6">
       <Card>
         <CardBody className="space-y-6 p-6">
-          <Field>
+          <FieldItem>
             <input
               type="text"
               value={name}
@@ -161,9 +161,9 @@ function CustomPuzzleForm({
               placeholder="My Custom Puzzle"
               className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
             />
-          </Field>
+          </FieldItem>
 
-          <Field>
+          <FieldItem>
             <Select
               value={type}
               onValueChange={(v) => setType(v as PuzzleType)}
@@ -179,7 +179,7 @@ function CustomPuzzleForm({
                 ))}
               </SelectContent>
             </Select>
-          </Field>
+          </FieldItem>
 
           {!blindfoldMode && (
             <div className="space-y-4 rounded-lg border p-4">
@@ -251,7 +251,7 @@ function CustomPuzzleForm({
             )}
           </div>
 
-          <Field
+          <FieldItem
           // label="Trim Percentage"
           // description="Percentage of best/worst solves to exclude from averages (default 5%)"
           >
@@ -267,7 +267,7 @@ function CustomPuzzleForm({
                 step={1}
               />
             </div>
-          </Field>
+          </FieldItem>
 
           <div className="flex items-center justify-between rounded-lg border p-4">
             <div className="space-y-0.5">
@@ -279,7 +279,7 @@ function CustomPuzzleForm({
             />
           </div>
 
-          <Field>
+          <FieldItem>
             <Select
               value={inputMethod}
               onValueChange={(v) => setInputMethod(v as InputMethod)}
@@ -293,7 +293,7 @@ function CustomPuzzleForm({
                 <SelectItem value="stackmat">Stackmat (Microphone)</SelectItem>
               </SelectContent>
             </Select>
-          </Field>
+          </FieldItem>
         </CardBody>
       </Card>
 
