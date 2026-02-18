@@ -4,27 +4,28 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  --background: oklch(0.97 0 0);
-  --foreground: oklch(0.15 0 0);
+  --background: oklch(0.93 0 0);
+  --foreground: oklch(0.14 0 0);
 
-  --secondary: oklch(0.99 0 0);
+  --secondary: oklch(0.96 0 0);
   --secondary-foreground: oklch(0.2 0 0);
 
-  --muted: oklch(1 0 0);
-  --muted-foreground: oklch(0.4 0 0);
+  --muted: oklch(0.99 0 0);
+  --muted-foreground: oklch(0.45 0 0);
 
-  --ring: oklch(0.4 0 0);
-  --input: oklch(0 0 0 / 15%);
-  --border: oklch(0 0 0 / 10%);
+  --ring: oklch(0.45 0 0);
+  --input: oklch(0.9 0 0);
 
-  --accent: oklch(0.8 0.15 211);
+  --border: oklch(0 0 0 / 12%);
 
-  --info: oklch(0.6 0.16 224);
-  --danger: oklch(0.6 0.22 27);
-  --warning: oklch(0.6 0.18 70);
-  --success: oklch(0.6 0.16 152);
+  --accent: oklch(0.58 0.2 245);
 
-  --radius: 0.75rem;
+  --info: oklch(0.59 0.16 220);
+  --danger: oklch(0.59 0.22 28);
+  --warning: oklch(0.59 0.2 80);
+  --success: oklch(0.59 0.2 155);
+
+  --radius: 0.65rem;
 
   --font-sans: "Nunito Variable", system-ui, sans-serif;
   --font-mono: "JetBrains Mono Variable", monospace;
@@ -32,17 +33,18 @@
 
 .dark {
   --background: oklch(0.2 0 0);
-  --foreground: oklch(0.95 0 0);
+  --foreground: oklch(0.96 0 0);
 
-  --secondary: oklch(0.24 0 0);
+  --secondary: oklch(0.23 0 0);
   --secondary-foreground: oklch(0.9 0 0);
 
-  --muted: oklch(0.28 0 0);
-  --muted-foreground: oklch(0.6 0 0);
+  --muted: oklch(0.26 0 0);
+  --muted-foreground: oklch(0.65 0 0);
 
-  --ring: oklch(0.6 0 0);
-  --input: oklch(1 0 0 / 15%);
-  --border: oklch(1 0 0 / 10%);
+  --ring: oklch(0.65 0 0);
+  --input: oklch(0.17 0 0);
+
+  --border: oklch(1 0 0 / 8%);
 }
 
 @theme inline {
@@ -103,10 +105,6 @@
 }
 
 @layer base {
-  * {
-    @apply border-border outline-ring/50;
-  }
-
   ::selection {
     @apply bg-accent/25;
   }
@@ -148,6 +146,18 @@
   @apply decoration-current decoration-1;
 }
 
+@utility input {
+  @apply h-9 flex w-full;
+  @apply text-secondary-foreground placeholder:text-muted-foreground text-responsive;
+  @apply rounded-sm border border-border bg-input;
+  @apply px-2.5 py-1 inset-shadow-sm;
+  @apply outline-none transition-fast;
+  @apply disabled:opacity-50 disabled:cursor-not-allowed;
+  @apply focus-visible:border-accent focus-visible:ring-3 focus-visible:ring-accent/50;
+  @apply aria-invalid:border-danger/75 aria-invalid:text-danger/75;
+  @apply aria-invalid:ring-danger/50 aria-invalid:placeholder:text-danger/75;
+}
+
 @utility shine {
   @apply relative;
 
@@ -170,11 +180,11 @@
 }
 
 @utility transition-fast {
-  @apply transition-all duration-250 ease-linear;
+  @apply transition-all duration-150 ease-linear;
 }
 
 @utility transition-slow {
-  @apply transition-all duration-450 ease-linear;
+  @apply transition-all duration-300 ease-linear;
 }
 
 @utility wrapper-* {
