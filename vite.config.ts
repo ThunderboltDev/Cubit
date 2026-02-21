@@ -5,18 +5,22 @@ import { nitro } from "nitro/vite";
 import { defineConfig } from "vite";
 import tsConfigPaths from "vite-tsconfig-paths";
 export default defineConfig({
-	server: {
-		port: 3000,
-	},
-	plugins: [
-		tailwindcss(),
-		tsConfigPaths({
-			projects: ["./tsconfig.json"],
-		}),
-		tanstackStart({
-			srcDirectory: "src",
-		}),
-		viteReact(),
-		nitro(),
-	],
+  server: {
+    port: 3000,
+  },
+  plugins: [
+    nitro(),
+    tailwindcss(),
+    tsConfigPaths({
+      projects: ["./tsconfig.json"],
+    }),
+    tanstackStart({
+      prerender: {
+        enabled: true,
+      },
+      
+      srcDirectory: "src",
+    }),
+    viteReact(),
+  ],
 });
