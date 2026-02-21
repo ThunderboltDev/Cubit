@@ -1,15 +1,20 @@
 import type { PuzzleType } from "@/types/puzzles";
 
+const isBrowser = typeof document !== "undefined";
+
+let cubingModule: typeof import("cubing/scramble") | null = null;
+
 export async function generateScramble(
-	puzzleType: PuzzleType
+  puzzleType: PuzzleType,
 ): Promise<string> {
-	if (typeof document === "undefined") {
-		return "Generating scramble";
-	}
+  if (!isBrowser) {
+    return "Generating scramble...";
+  }
 
-	const { randomScrambleForEvent } = await import("cubing/scramble");
+  if (!cubingModule) {
+    cubingModule = await import("cubing/scramble");
+  }
 
-	return randomScrambleForEvent(puzzleType).then((scramble) => {
-		return scramble.toString();
-	});
+  const scramble = await cubingModule.randomScrambleForEvent(puzzleType);
+  return scramble.toString();
 }
