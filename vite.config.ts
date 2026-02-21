@@ -22,4 +22,7 @@ export default defineConfig({
     }),
     viteReact(),
   ],
+  ssr: {
+    external: ["cubing", "cubing/scramble", "cubing/twisty"],
+  },
 });

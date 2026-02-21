@@ -1,4 +1,3 @@
-import type { VisualizationFormat } from "cubing/twisty";
 import type { PUZZLE_TYPES } from "@/lib/constants";
 import type { DisplayStatsConfig } from "@/types/stats";
 
@@ -21,7 +20,7 @@ export type Puzzle = {
 	// can be changed later
 	inputMethod: InputMethod;
 	scramblePreview: boolean;
-	scramblePreviewVisualization: VisualizationFormat;
+	scramblePreviewVisualization: import("cubing/twisty").VisualizationFormat;
 	displayStats: DisplayStatsConfig;
 };
 
