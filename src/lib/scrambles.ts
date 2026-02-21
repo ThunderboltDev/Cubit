@@ -2,9 +2,13 @@ import { randomScrambleForEvent } from "cubing/scramble";
 import type { PuzzleType } from "@/types/puzzles";
 
 export async function generateScramble(
-	puzzleType: PuzzleType
+  puzzleType: PuzzleType,
 ): Promise<string> {
-	return randomScrambleForEvent(puzzleType).then((scramble) => {
-		return scramble.toString();
-	});
+  if (typeof document === "undefined") {
+    return "Generating scramble";
+  }
+
+  return randomScrambleForEvent(puzzleType).then((scramble) => {
+    return scramble.toString();
+  });
 }
