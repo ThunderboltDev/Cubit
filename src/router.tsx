@@ -4,12 +4,12 @@ import { NotFound } from "@/components/app/not-found";
 import { routeTree } from "@/routeTree.gen";
 
 export function getRouter() {
-  const router = createRouter({
-    routeTree,
-    defaultPreload: "intent",
-    defaultErrorComponent: DefaultCatchBoundary,
-    defaultNotFoundComponent: () => <NotFound />,
-    scrollRestoration: true,
-  });
-  return router;
+	const router = createRouter({
+		routeTree,
+		defaultPreload: "intent",
+		defaultErrorComponent: DefaultCatchBoundary,
+		defaultNotFoundComponent: () => <NotFound />,
+		scrollRestoration: true,
+	});
+	return router;
 }

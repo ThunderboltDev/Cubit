@@ -4,59 +4,59 @@ import { db } from "@/lib/db";
 import type { Penalty, Solve, SolveInput } from "@/types/puzzles";
 
 interface UseSolvesOptions {
-  puzzleId?: string;
-  limit?: number;
-  offset?: number;
+	puzzleId?: string;
+	limit?: number;
+	offset?: number;
 }
 
 export function useSolves(options: UseSolvesOptions = {}) {
-  const { puzzleId, limit, offset = 0 } = options;
+	const { puzzleId, limit, offset = 0 } = options;
 
-  const solves = useLiveQuery(
-    async () => {
-      if (!puzzleId) return [];
+	const solves = useLiveQuery(
+		async () => {
+			if (!puzzleId) return [];
 
-      let query = db.solves.where("puzzleId").equals(puzzleId).reverse();
+			let query = db.solves.where("puzzleId").equals(puzzleId).reverse();
 
-      if (limit) {
-        query = query.offset(offset).limit(limit);
-      }
+			if (limit) {
+				query = query.offset(offset).limit(limit);
+			}
 
-      return await query.sortBy("createdAt");
-    },
-    [puzzleId, limit, offset],
-    [],
-  );
+			return await query.sortBy("createdAt");
+		},
+		[puzzleId, limit, offset],
+		[]
+	);
 
-  const addSolve = useCallback(async (solveData: SolveInput) => {
-    const newSolve: Solve = {
-      ...solveData,
-      id: crypto.randomUUID() as string,
-      createdAt: Date.now(),
-    };
+	const addSolve = useCallback(async (solveData: SolveInput) => {
+		const newSolve: Solve = {
+			...solveData,
+			id: crypto.randomUUID() as string,
+			createdAt: Date.now(),
+		};
 
-    await db.solves.add(newSolve);
+		await db.solves.add(newSolve);
 
-    return newSolve;
-  }, []);
+		return newSolve;
+	}, []);
 
-  const updatePenalty = useCallback(async (id: string, penalty: Penalty) => {
-    await db.solves.update(id, { penalty });
-  }, []);
+	const updatePenalty = useCallback(async (id: string, penalty: Penalty) => {
+		await db.solves.update(id, { penalty });
+	}, []);
 
-  const deleteSolve = useCallback(async (id: string) => {
-    await db.solves.delete(id);
-  }, []);
+	const deleteSolve = useCallback(async (id: string) => {
+		await db.solves.delete(id);
+	}, []);
 
-  const getTotalCount = useCallback(async (puzzleId: string) => {
-    return await db.solves.where("puzzleId").equals(puzzleId).count();
-  }, []);
+	const getTotalCount = useCallback(async (puzzleId: string) => {
+		return await db.solves.where("puzzleId").equals(puzzleId).count();
+	}, []);
 
-  return {
-    solves,
-    addSolve,
-    updatePenalty,
-    deleteSolve,
-    getTotalCount,
-  };
+	return {
+		solves,
+		addSolve,
+		updatePenalty,
+		deleteSolve,
+		getTotalCount,
+	};
 }

@@ -1,316 +1,302 @@
-import {
-  Add01Icon,
-  ArrowLeft01Icon,
-  CheckmarkCircle02Icon,
-  ViewIcon,
-  ViewOffIcon,
-} from "@hugeicons/core-free-icons";
+import { Add01Icon, CheckmarkCircle02Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { PuzzleIcon } from "@/components/puzzle/icon";
+import { SettingsItem, SettingsSection } from "@/components/timer/settings";
 import { Button } from "@/components/ui/button";
-import { Card, CardBody } from "@/components/ui/card";
-import { FieldItem } from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
 import { Page, PageBody, PageHeader, PageTitle } from "@/components/ui/page";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
 } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
 import { usePuzzles } from "@/hooks/use-puzzles";
 import {
-  DEFAULT_DISPLAY_STATS,
-  PUZZLE_TYPES,
-  WCA_PRESETS,
+	DEFAULT_DISPLAY_STATS,
+	PUZZLE_LABELS,
+	PUZZLE_TYPES,
+	WCA_PRESETS,
 } from "@/lib/constants";
-import { cn } from "@/lib/utils";
 import type { InputMethod, Puzzle, PuzzleType } from "@/types/puzzles";
 
 export const Route = createFileRoute("/puzzles/new")({
-  component: NewPuzzlePage,
+	component: NewPuzzlePage,
 });
 
 function NewPuzzlePage() {
-  const navigate = useNavigate();
-  const { createPuzzle, switchPuzzle } = usePuzzles();
-  const [mode, setMode] = useState<"presets" | "custom">("presets");
+	const navigate = useNavigate();
+	const { createPuzzle } = usePuzzles();
+	const [mode, setMode] = useState<"presets" | "custom">("presets");
 
-  const handleCreate = (puzzleData: Omit<Puzzle, "id">) => {
-    createPuzzle(puzzleData);
-    navigate({ to: "/" });
-  };
+	const handleCreate = (puzzleData: Omit<Puzzle, "id">) => {
+		createPuzzle(puzzleData);
+		navigate({ to: "/" });
+	};
 
-  return (
-    <Page>
-      <PageHeader className="flex items-center gap-4">
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => navigate({ to: "/" })}
-        >
-          <HugeiconsIcon icon={ArrowLeft01Icon} />
-        </Button>
-        <PageTitle>New Puzzle</PageTitle>
-      </PageHeader>
+	return (
+		<Page showNavHeader>
+			<PageHeader>
+				<PageTitle>New Puzzle</PageTitle>
+			</PageHeader>
 
-      <PageBody>
-        {mode === "presets" ?
-          <div className="space-y-8">
-            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
-              {WCA_PRESETS.map((preset) => (
-                <button
-                  key={preset.id}
-                  type="button"
-                  onClick={() =>
-                    handleCreate({
-                      ...preset,
-                      name: preset.name ?? "New Puzzle",
-                      type: preset.type ?? "333",
-                      inspectionEnabled: preset.inspectionEnabled ?? true,
-                      inspectionDuration: preset.inspectionDuration ?? 15,
-                      multiphaseEnabled: false,
-                      multiphaseCount: 0,
-                      inputMethod: "timer",
-                      scramblePreview: true,
-                      scramblePreviewVisualization: "3D",
-                      displayStats: DEFAULT_DISPLAY_STATS,
-                      trimPercentage: preset.trimPercentage ?? 5,
-                    })
-                  }
-                  className="group relative flex flex-col items-center gap-3 rounded-xl border bg-card p-6 text-center shadow-sm transition-all hover:border-primary hover:shadow-md"
-                >
-                  <PuzzleIcon puzzleType={"222"} />
-                  <span className="font-semibold">{preset.name}</span>
-                </button>
-              ))}
-            </div>
+			<PageBody>
+				{mode === "presets" ? (
+					<div className="space-y-8">
+						<div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
+							{WCA_PRESETS.map((preset) => (
+								<button
+									key={preset.id}
+									type="button"
+									onClick={() =>
+										handleCreate({
+											...preset,
+											name: preset.name ?? "New Puzzle",
+											type: preset.type ?? "333",
+											inspectionEnabled: preset.inspectionEnabled ?? true,
+											inspectionDuration: preset.inspectionDuration ?? 15,
+											multiphaseEnabled: false,
+											multiphaseCount: 0,
+											inputMethod: "timer",
+											scramblePreview: true,
+											scramblePreviewVisualization: "3D",
+											displayStats: DEFAULT_DISPLAY_STATS,
+											trimPercentage: preset.trimPercentage ?? 5,
+										} as Puzzle)
+									}
+									className="group relative flex flex-col items-center gap-4 rounded-xl border border-border bg-secondary p-6 text-center shadow-md transition-all hover:border-accent hover:shadow-lg active:scale-95 duration-200"
+								>
+									<div className="relative flex h-16 w-16 items-center justify-center rounded-lg bg-background shadow-sm group-hover:bg-accent/5 group-hover:scale-110 duration-200 transition-transform">
+										<PuzzleIcon puzzleType={preset.type ?? "333"} size={32} />
+									</div>
+									<span className="font-medium text-sm text-foreground">
+										{preset.name}
+									</span>
+								</button>
+							))}
+						</div>
 
-            <div className="flex justify-center">
-              <Button
-                variant="outline"
-                size="lg"
-                className="gap-2"
-                onClick={() => setMode("custom")}
-              >
-                <HugeiconsIcon icon={Add01Icon} />
-                Create Custom Puzzle
-              </Button>
-            </div>
-          </div>
-        : <div className="mx-auto max-w-lg space-y-6">
-            <CustomPuzzleForm
-              onSubmit={handleCreate}
-              onCancel={() => setMode("presets")}
-            />
-          </div>
-        }
-      </PageBody>
-    </Page>
-  );
+						<div className="flex justify-center">
+							<Button
+								variant="outline"
+								size="lg"
+								className="gap-2"
+								onClick={() => setMode("custom")}
+							>
+								<HugeiconsIcon icon={Add01Icon} />
+								Create Custom Puzzle
+							</Button>
+						</div>
+					</div>
+				) : (
+					<div className="mx-auto max-w-lg space-y-6">
+						<CustomPuzzleForm
+							onSubmit={handleCreate}
+							onCancel={() => setMode("presets")}
+						/>
+					</div>
+				)}
+			</PageBody>
+		</Page>
+	);
 }
 
 function CustomPuzzleForm({
-  onSubmit,
-  onCancel,
+	onSubmit,
+	onCancel,
 }: {
-  onSubmit: (data: Omit<Puzzle, "id">) => void;
-  onCancel: () => void;
+	onSubmit: (data: Omit<Puzzle, "id">) => void;
+	onCancel: () => void;
 }) {
-  const [name, setName] = useState("");
-  const [type, setType] = useState<PuzzleType>("333");
-  const [inspectionEnabled, setInspectionEnabled] = useState(true);
-  const [inspectionDuration, setInspectionDuration] = useState(15);
-  const [blindfoldMode, setBlindfoldMode] = useState(false);
-  const [multiphaseEnabled, setMultiphaseEnabled] = useState(false);
-  const [multiphaseCount, setMultiphaseCount] = useState(2);
-  const [trimPercentage, setTrimPercentage] = useState(5);
-  const [scramblePreview, setScramblePreview] = useState(true);
-  const [inputMethod, setInputMethod] = useState<InputMethod>("timer");
+	const [name, setName] = useState("");
+	const [type, setType] = useState<PuzzleType>("333");
+	const [inspectionEnabled, setInspectionEnabled] = useState(true);
+	const [inspectionDuration, setInspectionDuration] = useState(15);
+	const [multiphaseEnabled, setMultiphaseEnabled] = useState(false);
+	const [multiphaseCount, setMultiphaseCount] = useState(2);
+	const [trimPercentage, setTrimPercentage] = useState(5);
+	const [scramblePreview, setScramblePreview] = useState(true);
+	const [inputMethod, setInputMethod] = useState<InputMethod>("timer");
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    onSubmit({
-      name: name.trim() || type,
-      type,
-      inspectionEnabled,
-      inspectionDuration,
-      multiphaseEnabled,
-      multiphaseCount: multiphaseEnabled ? multiphaseCount : 0,
-      trimPercentage,
-      inputMethod,
-      scramblePreview,
-      scramblePreviewVisualization: "3D",
-      displayStats: DEFAULT_DISPLAY_STATS,
-    });
-  };
+	const handleSubmit = (e: React.FormEvent) => {
+		e.preventDefault();
+		onSubmit({
+			name: name.trim() || type,
+			type,
+			inspectionEnabled,
+			inspectionDuration,
+			multiphaseEnabled,
+			multiphaseCount: multiphaseEnabled ? multiphaseCount : 0,
+			trimPercentage,
+			inputMethod,
+			scramblePreview,
+			scramblePreviewVisualization: "3D",
+			displayStats: DEFAULT_DISPLAY_STATS,
+		});
+	};
 
-  return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      <Card>
-        <CardBody className="space-y-6 p-6">
-          <FieldItem>
-            <input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="My Custom Puzzle"
-              className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
-            />
-          </FieldItem>
+	return (
+		<form onSubmit={handleSubmit} className="space-y-8">
+			<SettingsSection title="General Settings">
+				<SettingsItem label="Name" description="A unique name for this puzzle.">
+					<Input
+						value={name}
+						onChange={(e) => setName(e.target.value)}
+						placeholder={PUZZLE_LABELS[type]}
+						className="w-full sm:w-64"
+					/>
+				</SettingsItem>
 
-          <FieldItem>
-            <Select
-              value={type}
-              onValueChange={(v) => setType(v as PuzzleType)}
-            >
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {PUZZLE_TYPES.map((t) => (
-                  <SelectItem key={t} value={t}>
-                    {t}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </FieldItem>
+				<SettingsItem
+					label="Puzzle Type"
+					description="Select the puzzle type for logic and scrambles."
+				>
+					<Select value={type} onValueChange={(v) => setType(v as PuzzleType)}>
+						<SelectTrigger className="w-full sm:w-64">
+							<SelectValue />
+						</SelectTrigger>
+						<SelectContent>
+							{PUZZLE_TYPES.map((t) => (
+								<SelectItem key={t} value={t}>
+									{PUZZLE_LABELS[t]}
+								</SelectItem>
+							))}
+						</SelectContent>
+					</Select>
+				</SettingsItem>
 
-          {!blindfoldMode && (
-            <div className="space-y-4 rounded-lg border p-4">
-              <div className="flex items-center justify-between">
-                <div className="space-y-0.5">
-                  <label className="text-sm font-medium">Inspection</label>
-                  <p className="text-xs text-muted-foreground">
-                    Standard WCA inspection is 15s
-                  </p>
-                </div>
-                <Switch
-                  checked={inspectionEnabled}
-                  onCheckedChange={setInspectionEnabled}
-                />
-              </div>
+				<SettingsItem
+					label="Input Method"
+					description="How you would like to enter your times."
+				>
+					<Select
+						value={inputMethod}
+						onValueChange={(v) => setInputMethod(v as InputMethod)}
+					>
+						<SelectTrigger className="w-full sm:w-64">
+							<SelectValue />
+						</SelectTrigger>
+						<SelectContent>
+							<SelectItem value="timer">Timer (Spacebar / Touch)</SelectItem>
+							<SelectItem value="typing">Manual Entry</SelectItem>
+							<SelectItem value="stackmat">Stackmat (Microphone)</SelectItem>
+						</SelectContent>
+					</Select>
+				</SettingsItem>
+			</SettingsSection>
 
-              {inspectionEnabled && (
-                <div className="space-y-3 pt-2">
-                  <div className="flex justify-between">
-                    <span className="text-xs text-muted-foreground">
-                      Duration
-                    </span>
-                    <span className="text-xs font-mono">
-                      {inspectionDuration}s
-                    </span>
-                  </div>
-                  <Slider
-                    value={[inspectionDuration]}
-                    onValueChange={([v]) => setInspectionDuration(v)}
-                    min={0}
-                    max={60}
-                    step={1}
-                  />
-                </div>
-              )}
-            </div>
-          )}
+			<SettingsSection title="Timer & Inspection">
+				<SettingsItem
+					label="Inspection"
+					description="Enable standard WCA-style inspection."
+				>
+					<Switch
+						checked={inspectionEnabled}
+						onCheckedChange={setInspectionEnabled}
+					/>
+				</SettingsItem>
 
-          <div className="space-y-4 rounded-lg border p-4">
-            <div className="flex items-center justify-between">
-              <div className="space-y-0.5">
-                <label className="text-sm font-medium">Multiphase</label>
-                <p className="text-xs text-muted-foreground">
-                  Track splits for different phases
-                </p>
-              </div>
-              <Switch
-                checked={multiphaseEnabled}
-                onCheckedChange={setMultiphaseEnabled}
-              />
-            </div>
+				{inspectionEnabled && (
+					<SettingsItem
+						label="Inspection Duration"
+						description={`${inspectionDuration} seconds`}
+						orientation="vertical"
+					>
+						<Slider
+							value={[inspectionDuration]}
+							onValueChange={(v) =>
+								setInspectionDuration(typeof v === "number" ? v : v[0])
+							}
+							min={0}
+							max={60}
+							step={1}
+						/>
+					</SettingsItem>
+				)}
 
-            {multiphaseEnabled && (
-              <div className="space-y-3 pt-2">
-                <div className="flex justify-between">
-                  <span className="text-xs text-muted-foreground">
-                    Number of Phases
-                  </span>
-                  <span className="text-xs font-mono">{multiphaseCount}</span>
-                </div>
-                <Slider
-                  value={[multiphaseCount]}
-                  onValueChange={([v]) => setMultiphaseCount(v)}
-                  min={2}
-                  max={10}
-                  step={1}
-                />
-              </div>
-            )}
-          </div>
+				<SettingsItem
+					label="Multiphase"
+					description="Split your solve into multiple steps."
+				>
+					<Switch
+						checked={multiphaseEnabled}
+						onCheckedChange={setMultiphaseEnabled}
+					/>
+				</SettingsItem>
 
-          <FieldItem
-          // label="Trim Percentage"
-          // description="Percentage of best/worst solves to exclude from averages (default 5%)"
-          >
-            <div className="space-y-3">
-              <div className="flex justify-between">
-                <span className="text-xs font-mono">{trimPercentage}%</span>
-              </div>
-              <Slider
-                value={[trimPercentage]}
-                onValueChange={([v]) => setTrimPercentage(v)}
-                min={0}
-                max={20}
-                step={1}
-              />
-            </div>
-          </FieldItem>
+				{multiphaseEnabled && (
+					<SettingsItem
+						label="Number of Phases"
+						description={`${multiphaseCount} phases`}
+						orientation="vertical"
+					>
+						<Slider
+							value={[multiphaseCount]}
+							onValueChange={(v) =>
+								setMultiphaseCount(typeof v === "number" ? v : v[0])
+							}
+							min={2}
+							max={10}
+							step={1}
+						/>
+					</SettingsItem>
+				)}
+			</SettingsSection>
 
-          <div className="flex items-center justify-between rounded-lg border p-4">
-            <div className="space-y-0.5">
-              <label className="text-sm font-medium">Scramble Preview</label>
-            </div>
-            <Switch
-              checked={scramblePreview}
-              onCheckedChange={setScramblePreview}
-            />
-          </div>
+			<SettingsSection title="Statistics & Averages">
+				<SettingsItem
+					label="Trim Percentage"
+					description="Percentage of best/worst solves to exclude from AoN."
+					orientation="vertical"
+				>
+					<div className="flex flex-col gap-3">
+						<span className="text-xs font-mono text-muted-foreground self-end">
+							{trimPercentage}%
+						</span>
+						<Slider
+							value={[trimPercentage]}
+							onValueChange={(v) =>
+								setTrimPercentage(typeof v === "number" ? v : v[0])
+							}
+							min={0}
+							max={20}
+							step={1}
+						/>
+					</div>
+				</SettingsItem>
+			</SettingsSection>
 
-          <FieldItem>
-            <Select
-              value={inputMethod}
-              onValueChange={(v) => setInputMethod(v as InputMethod)}
-            >
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="timer">Timer (Spacebar / Touch)</SelectItem>
-                <SelectItem value="typing">Manual Entry</SelectItem>
-                <SelectItem value="stackmat">Stackmat (Microphone)</SelectItem>
-              </SelectContent>
-            </Select>
-          </FieldItem>
-        </CardBody>
-      </Card>
+			<SettingsSection title="Visuals">
+				<SettingsItem
+					label="Scramble Preview"
+					description="Show a 2D or 3D visualization of the scramble."
+				>
+					<Switch
+						checked={scramblePreview}
+						onCheckedChange={setScramblePreview}
+					/>
+				</SettingsItem>
+			</SettingsSection>
 
-      <div className="flex gap-3">
-        <Button
-          type="button"
-          variant="outline"
-          className="flex-1"
-          onClick={onCancel}
-        >
-          Cancel
-        </Button>
-        <Button type="submit" className="flex-1">
-          <HugeiconsIcon icon={CheckmarkCircle02Icon} />
-          Create Puzzle
-        </Button>
-      </div>
-    </form>
-  );
+			<div className="flex gap-3 pt-4">
+				<Button
+					type="button"
+					variant="outline"
+					className="flex-1"
+					onClick={onCancel}
+				>
+					Cancel
+				</Button>
+				<Button type="submit" className="flex-1" theme="accent">
+					<HugeiconsIcon icon={CheckmarkCircle02Icon} className="size-4" />
+					Create Puzzle
+				</Button>
+			</div>
+		</form>
+	);
 }
