@@ -18,8 +18,8 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Page, PageBody, PageHeader, PageTitle } from "@/components/ui/page";
 import {
   Select,
   SelectContent,
@@ -29,7 +29,11 @@ import {
 } from "@/components/ui/select";
 import {
   Sheet,
+  SheetAction,
+  SheetBody,
+  SheetCancel,
   SheetContent,
+  SheetFooter,
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
@@ -141,10 +145,10 @@ function SolvesPage() {
   };
 
   return (
-    <div className="flex h-dvh flex-col md:h-svh">
-      <div className="space-y-4 p-6 pb-0">
-        <h1 className="text-2xl font-bold">Solves</h1>
-        <div className="flex flex-wrap gap-3">
+    <Page>
+      <PageHeader className="space-y-4">
+        <PageTitle>Solves</PageTitle>
+        <div className="flex flex-wrap items-center gap-3">
           <Select
             value={penaltyFilter}
             onValueChange={(v) => setPenaltyFilter(v as PenaltyFilter)}
@@ -175,13 +179,13 @@ function SolvesPage() {
             </SelectContent>
           </Select>
 
-          <span className="ml-auto self-center text-sm text-muted-foreground">
+          <span className="ml-auto text-sm text-muted-foreground mr-2">
             {filteredSolves.length} solve{filteredSolves.length !== 1 && "s"}
           </span>
         </div>
-      </div>
+      </PageHeader>
 
-      <div className="flex-1 overflow-y-auto p-6 pb-mobile-nav md:pb-6">
+      <PageBody>
         {filteredSolves.length === 0 ?
           <div className="flex h-40 items-center justify-center text-muted-foreground">
             {solves.length === 0 ?
@@ -189,102 +193,133 @@ function SolvesPage() {
             : "No solves match this filter."}
           </div>
         : <div className="space-y-1">
-            {filteredSolves.map((solve) => (
-              <button
-                key={solve.id}
-                type="button"
-                className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left transition-colors hover:bg-secondary"
-                onClick={() => setSelectedSolve(solve)}
-              >
-                <span className="min-w-20 font-mono text-base font-semibold">
-                  {formatSolveTime(solve)}
-                </span>
-                {solve.penalty !== "OK" && (
-                  <Badge
-                    theme={solve.penalty === "DNF" ? "danger" : "warning"}
-                    className="text-xs"
+            {filteredSolves.map((solve) => {
+              const solveTimeTextClass =
+                solve.penalty === "DNF" ? "text-danger"
+                : solve.penalty === "+2" ? "text-warning"
+                : "text-foreground";
+
+              return (
+                <Button
+                  key={solve.id}
+                  variant="transparent"
+                  className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left transition-colors hover:bg-secondary"
+                  onClick={() => setSelectedSolve(solve)}
+                >
+                  <span
+                    className={`min-w-20 font-mono text-base font-semibold ${solveTimeTextClass}`}
                   >
-                    {solve.penalty}
-                  </Badge>
-                )}
-                <span className="flex-1 truncate text-xs text-muted-foreground font-mono">
-                  {solve.scramble}
-                </span>
-                <span className="shrink-0 text-xs text-muted-foreground">
-                  {formatDate(solve.createdAt)}
-                </span>
-              </button>
-            ))}
+                    {formatSolveTime(solve)}
+                  </span>
+                  <span className="flex-1 truncate text-xs text-muted-foreground font-mono">
+                    {solve.scramble}
+                  </span>
+                  <span className="shrink-0 text-xs text-muted-foreground">
+                    {formatDate(solve.createdAt)}
+                  </span>
+                </Button>
+              );
+            })}
           </div>
         }
-      </div>
+      </PageBody>
 
       <Sheet
         open={!!selectedSolve}
         onOpenChange={(open) => !open && setSelectedSolve(null)}
       >
-        <SheetContent side="bottom" className="max-h-[70dvh]">
+        <SheetContent side="bottom" className="max-h-[85dvh]">
           {selectedSolve && (
             <>
               <SheetHeader>
                 <SheetTitle>Solve Detail</SheetTitle>
               </SheetHeader>
-              <div className="space-y-5 p-4 pt-0">
-                <div className="flex items-baseline gap-3">
-                  <span className="font-mono text-4xl font-bold">
+              <SheetBody className="space-y-6">
+                <div>
+                  <div
+                    className={`font-mono text-5xl font-black tracking-tighter ${
+                      selectedSolve.penalty === "DNF" ? "text-danger"
+                      : selectedSolve.penalty === "+2" ? "text-warning"
+                      : "text-foreground"
+                    }`}
+                  >
                     {formatSolveTime(selectedSolve)}
-                  </span>
-                  {selectedSolve.penalty !== "OK" && (
-                    <Badge
-                      theme={
-                        selectedSolve.penalty === "DNF" ? "danger" : "warning"
-                      }
-                    >
-                      {selectedSolve.penalty}
-                    </Badge>
-                  )}
-                </div>
-
-                <div className="text-sm text-muted-foreground">
-                  {new Date(selectedSolve.createdAt).toLocaleString()}
+                  </div>
+                  <div className="text-sm text-muted-foreground mt-2 font-medium">
+                    {new Date(selectedSolve.createdAt).toLocaleString()}
+                  </div>
                 </div>
 
                 {(selectedSolve.kind === "inspection" ||
                   selectedSolve.kind === "full") && (
-                  <div className="flex items-center gap-2 text-sm">
-                    <span className="text-muted-foreground">Inspection:</span>
-                    <span className="font-mono">
+                  <div className="flex items-center justify-between rounded-lg bg-secondary/50 p-4 border border-border">
+                    <span className="text-sm font-medium text-foreground">
+                      Inspection Time
+                    </span>
+                    <span className="font-mono font-semibold text-accent">
                       {formatTime(selectedSolve.inspectionTime, 1)}s
                     </span>
                   </div>
                 )}
 
-                <div className="space-y-1.5">
+                <div className="space-y-2">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium">Scramble</span>
+                    <span className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+                      Scramble
+                    </span>
                     <Button
                       variant="ghost"
                       size="sm"
                       onClick={() => handleCopyScramble(selectedSolve.scramble)}
+                      className="h-8 group"
                     >
-                      <HugeiconsIcon icon={Copy01Icon} />
+                      <HugeiconsIcon
+                        icon={Copy01Icon}
+                        className="text-muted-foreground group-hover:text-foreground transition-colors"
+                      />
                       {copyFeedback ? "Copied!" : "Copy"}
                     </Button>
                   </div>
-                  <p className="rounded-lg bg-secondary p-3 font-mono text-sm leading-relaxed">
+                  <p className="rounded-xl bg-secondary/80 p-4 font-mono text-[13px] leading-relaxed border border-border overflow-x-auto whitespace-pre-wrap">
                     {selectedSolve.scramble}
                   </p>
                 </div>
 
-                <div className="flex items-center gap-3">
-                  <span className="text-sm font-medium text-muted-foreground">
-                    Penalty:
+                <div className="space-y-3">
+                  <span className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+                    Penalty
                   </span>
-                  <div className="flex gap-2">
+                  <div className="grid grid-cols-3 gap-3">
                     <Button
-                      size="sm"
+                      variant={
+                        selectedSolve.penalty === "OK" ? "default" : "outline"
+                      }
+                      className={
+                        selectedSolve.penalty === "OK" ?
+                          ""
+                        : "text-muted-foreground"
+                      }
+                      onClick={() => {
+                        updatePenalty(selectedSolve.id, "OK");
+                        setSelectedSolve({
+                          ...selectedSolve,
+                          penalty: "OK",
+                        });
+                      }}
+                    >
+                      No Penalty
+                    </Button>
+                    <Button
                       variant={
                         selectedSolve.penalty === "+2" ? "default" : "outline"
+                      }
+                      theme={
+                        selectedSolve.penalty === "+2" ? "warning" : "default"
+                      }
+                      className={
+                        selectedSolve.penalty !== "+2" ?
+                          "text-muted-foreground"
+                        : ""
                       }
                       onClick={() => {
                         const newPenalty: Penalty =
@@ -300,12 +335,16 @@ function SolvesPage() {
                       +2
                     </Button>
                     <Button
-                      size="sm"
                       variant={
                         selectedSolve.penalty === "DNF" ? "default" : "outline"
                       }
                       theme={
                         selectedSolve.penalty === "DNF" ? "danger" : "default"
+                      }
+                      className={
+                        selectedSolve.penalty !== "DNF" ?
+                          "text-muted-foreground"
+                        : ""
                       }
                       onClick={() => {
                         const newPenalty: Penalty =
@@ -322,17 +361,19 @@ function SolvesPage() {
                     </Button>
                   </div>
                 </div>
-
+              </SheetBody>
+              <SheetFooter className="mt-4 sm:justify-between items-center flex-row-reverse w-full gap-2">
+                <SheetCancel className="w-full sm:w-auto" />
                 <Button
                   variant="outline"
                   theme="danger"
-                  className="w-full"
+                  className="w-full sm:w-auto mt-0!"
                   onClick={() => setDeleteTarget(selectedSolve)}
                 >
                   <HugeiconsIcon icon={Delete02Icon} />
                   Delete Solve
                 </Button>
-              </div>
+              </SheetFooter>
             </>
           )}
         </SheetContent>
@@ -358,6 +399,6 @@ function SolvesPage() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </div>
+    </Page>
   );
 }

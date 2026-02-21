@@ -1,15 +1,32 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { Badge } from "@/components/ui/badge";
 import {
-  FieldDescription,
-  FieldGroup,
-  FieldItem,
-  FieldLabel,
-  FieldLegend,
-  FieldSet,
-} from "@/components/ui/field";
+  ActivityIcon,
+  Add01Icon,
+  ArrowDownIcon,
+  ArrowHorizontalIcon,
+  ArrowUpIcon,
+  ArrowVerticalIcon,
+  BluetoothIcon,
+  Cancel01Icon,
+  ChampionIcon,
+  type ChartIcon,
+  ChartUpIcon,
+  KeyboardIcon,
+  LayoutGridIcon,
+  Menu02Icon,
+  TargetIcon,
+  Timer01Icon,
+  Timer02Icon,
+} from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { createFileRoute } from "@tanstack/react-router";
+import { PuzzleIcon } from "@/components/puzzle/icon";
+import { ScramblePreview } from "@/components/timer/scramble-preview";
+import { SettingsItem, SettingsSection } from "@/components/timer/settings";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Page,
+  PageBody,
   PageDescription,
   PageHeader,
   PageTitle,
@@ -21,13 +38,28 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
 import { usePuzzles } from "@/hooks/use-puzzles";
+import { PUZZLE_LABELS } from "@/lib/constants";
+import type { InputMethod } from "@/types/puzzles";
+import type { StatType } from "@/types/stats";
 
 export const Route = createFileRoute("/_timer/configuration")({
   component: PuzzleConfigurationPage,
 });
+
+const STAT_TYPE_OPTIONS: {
+  value: StatType["type"];
+  label: string;
+  icon: typeof ChartIcon;
+}[] = [
+  { value: "average", label: "Average", icon: ChartUpIcon },
+  { value: "best", label: "Best", icon: ChampionIcon },
+  { value: "mean", label: "Mean", icon: ActivityIcon },
+  { value: "consistency", label: "Consistency", icon: TargetIcon },
+];
+
+const MAX_STATS = 5;
 
 function PuzzleConfigurationPage() {
   const { currentPuzzle, updatePuzzle } = usePuzzles();
@@ -36,192 +68,358 @@ function PuzzleConfigurationPage() {
     return (
       <Page>
         <PageHeader>
-          <PageTitle>Timer Options</PageTitle>
+          <PageTitle>Puzzle Configuration</PageTitle>
           <PageDescription>No puzzle selected</PageDescription>
         </PageHeader>
       </Page>
     );
   }
 
+  const displayStats = currentPuzzle.displayStats;
+
+  const updateStat = (index: number, updates: Partial<StatType>) => {
+    const newStats = [...displayStats.stats];
+    newStats[index] = { ...newStats[index], ...updates } as StatType;
+    updatePuzzle(currentPuzzle.id, {
+      displayStats: { ...displayStats, stats: newStats },
+    });
+  };
+
+  const addStat = () => {
+    if (displayStats.stats.length >= MAX_STATS) return;
+    const newStat: StatType = { type: "average", n: 5 };
+    updatePuzzle(currentPuzzle.id, {
+      displayStats: {
+        ...displayStats,
+        stats: [...displayStats.stats, newStat],
+      },
+    });
+  };
+
+  const removeStat = (index: number) => {
+    const newStats = displayStats.stats.filter((_, i) => i !== index);
+    updatePuzzle(currentPuzzle.id, {
+      displayStats: { ...displayStats, stats: newStats },
+    });
+  };
+
+  const moveStat = (index: number, direction: "up" | "down") => {
+    if (direction === "up" && index === 0) return;
+    if (direction === "down" && index === displayStats.stats.length - 1) return;
+
+    const newStats = [...displayStats.stats];
+    const newIndex = direction === "up" ? index - 1 : index + 1;
+    [newStats[index], newStats[newIndex]] = [
+      newStats[newIndex],
+      newStats[index],
+    ];
+
+    updatePuzzle(currentPuzzle.id, {
+      displayStats: { ...displayStats, stats: newStats },
+    });
+  };
+
   return (
     <Page>
       <PageHeader>
-        <PageTitle>Timer Options</PageTitle>
-        <PageDescription>Configure {currentPuzzle.name}</PageDescription>
+        <PageTitle>Puzzle Configuration</PageTitle>
+        <PageDescription>Customize your solving experience</PageDescription>
       </PageHeader>
 
-      <FieldSet>
-        <FieldLegend>Inspection</FieldLegend>
-        <FieldGroup>
-          <FieldItem orientation="horizontal">
-            <div className="flex-1">
-              <FieldLabel>Enable Inspection</FieldLabel>
-              <FieldDescription>
-                15 second inspection before solve starts
-              </FieldDescription>
-            </div>
-            <Switch
-              checked={currentPuzzle.inspectionEnabled}
-              onCheckedChange={(checked) =>
-                updatePuzzle(currentPuzzle.id, { inspectionEnabled: checked })
+      <PageBody className="space-y-8 pb-12">
+        <SettingsSection title="Identity">
+          <SettingsItem label="Puzzle Name">
+            <Input
+              value={currentPuzzle.name}
+              onChange={(e) =>
+                updatePuzzle(currentPuzzle.id, { name: e.target.value })
               }
+              className="w-48"
+              placeholder="3x3"
             />
-          </FieldItem>
+          </SettingsItem>
+
+          <SettingsItem
+            label="Puzzle Type"
+            description="Cannot be changed after creation"
+          >
+            <div className="flex items-center gap-2 text-muted-foreground">
+              <PuzzleIcon puzzleType={currentPuzzle.type} size={20} />
+              <span className="font-medium">
+                {PUZZLE_LABELS[currentPuzzle.type]}
+              </span>
+            </div>
+          </SettingsItem>
+        </SettingsSection>
+
+        <SettingsSection title="Core Settings">
+          <SettingsItem label="Inspection" description="WCA Inspection">
+            <span className="text-muted-foreground">
+              {currentPuzzle.inspectionEnabled ? "Enabled" : "Disabled"}
+            </span>
+          </SettingsItem>
 
           {currentPuzzle.inspectionEnabled && (
-            <FieldItem orientation="horizontal">
-              <div className="flex-1">
-                <FieldLabel>Inspection Duration</FieldLabel>
-              </div>
-              <div className="flex items-center gap-3">
-                <Slider
-                  className="w-32"
-                  min={0}
-                  max={30}
-                  step={1}
-                  value={[currentPuzzle.inspectionDuration]}
-                  onValueChange={(value) =>
-                    updatePuzzle(currentPuzzle.id, {
-                      inspectionDuration:
-                        Array.isArray(value) ? value[0] : value,
-                    })
-                  }
-                />
-                <Badge
-                  variant="transparent"
-                  className="w-14 justify-center font-mono"
-                >
-                  {currentPuzzle.inspectionDuration}s
-                </Badge>
-              </div>
-            </FieldItem>
+            <SettingsItem label="Inspection Duration">
+              <span className="text-muted-foreground">
+                {currentPuzzle.inspectionDuration}s
+              </span>
+            </SettingsItem>
           )}
-        </FieldGroup>
-      </FieldSet>
 
-      <FieldSet>
-        <FieldLegend>Multiphase</FieldLegend>
-        <FieldGroup>
-          <FieldItem orientation="horizontal">
-            <div className="flex-1">
-              <FieldLabel>Enable Multiphase</FieldLabel>
-              <FieldDescription>
-                Split solve into multiple timed phases
-              </FieldDescription>
-            </div>
-            <Switch
-              checked={currentPuzzle.multiphaseEnabled}
-              onCheckedChange={(checked) =>
-                updatePuzzle(currentPuzzle.id, { multiphaseEnabled: checked })
-              }
-            />
-          </FieldItem>
+          <SettingsItem label="Multiphase">
+            <span className="text-muted-foreground">
+              {currentPuzzle.multiphaseEnabled ? "Enabled" : "Disabled"}
+            </span>
+          </SettingsItem>
 
           {currentPuzzle.multiphaseEnabled && (
-            <FieldItem orientation="horizontal">
-              <div className="flex-1">
-                <FieldLabel>Phase Count</FieldLabel>
-              </div>
-              <div className="flex items-center gap-3">
-                <Slider
-                  className="w-32"
-                  min={2}
-                  max={10}
-                  step={1}
-                  value={[currentPuzzle.multiphaseCount]}
-                  onValueChange={(value) =>
-                    updatePuzzle(currentPuzzle.id, {
-                      multiphaseCount: Array.isArray(value) ? value[0] : value,
-                    })
-                  }
-                />
-                <Badge
-                  variant="transparent"
-                  className="w-8 justify-center font-mono"
-                >
-                  {currentPuzzle.multiphaseCount}
-                </Badge>
-              </div>
-            </FieldItem>
+            <SettingsItem label="Phase Count">
+              <span className="text-muted-foreground">
+                {currentPuzzle.multiphaseCount}
+              </span>
+            </SettingsItem>
           )}
-        </FieldGroup>
-      </FieldSet>
 
-      <FieldSet>
-        <FieldLegend>Statistics</FieldLegend>
-        <FieldGroup>
-          <FieldItem orientation="horizontal">
-            <div className="flex-1">
-              <FieldLabel>Trim Percentage</FieldLabel>
-              <FieldDescription>
-                Percentage of best/worst times to trim from averages
-              </FieldDescription>
-            </div>
-            <div className="flex items-center gap-3">
-              <Slider
-                className="w-32"
-                min={0}
-                max={10}
-                step={1}
-                value={[currentPuzzle.trimPercentage]}
-                onValueChange={(value) =>
-                  updatePuzzle(currentPuzzle.id, {
-                    trimPercentage: Array.isArray(value) ? value[0] : value,
-                  })
-                }
-              />
-              <Badge
-                variant="transparent"
-                className="w-10 justify-center font-mono"
-              >
-                {currentPuzzle.trimPercentage}%
-              </Badge>
-            </div>
-          </FieldItem>
-        </FieldGroup>
-      </FieldSet>
+          <SettingsItem
+            label="Trim Percentage"
+            description="Outliers removed from average calculations"
+          >
+            <span className="text-muted-foreground">
+              {currentPuzzle.trimPercentage}%
+            </span>
+          </SettingsItem>
+        </SettingsSection>
 
-      <FieldSet>
-        <FieldLegend>Scramble Preview</FieldLegend>
-        <FieldGroup>
-          <FieldItem orientation="horizontal">
-            <div className="flex-1">
-              <FieldLabel>Show Scramble Preview</FieldLabel>
-              <FieldDescription>
-                Display visual puzzle state next to scramble
-              </FieldDescription>
-            </div>
+        <SettingsSection title="Input">
+          <SettingsItem label="Input Method">
+            <Select
+              value={currentPuzzle.inputMethod}
+              onValueChange={(value) =>
+                updatePuzzle(currentPuzzle.id, {
+                  inputMethod: value as InputMethod,
+                })
+              }
+            >
+              <SelectTrigger className="w-52">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent align="end">
+                <SelectItem value="manual" disabled>
+                  <HugeiconsIcon icon={KeyboardIcon} />
+                  Manual (type time)
+                </SelectItem>
+                <SelectItem value="timer">
+                  <HugeiconsIcon icon={Timer02Icon} />
+                  On-screen timer
+                </SelectItem>
+                <SelectItem value="stackmat" disabled>
+                  <HugeiconsIcon icon={Timer01Icon} />
+                  Stackmat
+                </SelectItem>
+                <SelectItem value="bluetooth" disabled>
+                  <HugeiconsIcon icon={BluetoothIcon} />
+                  Bluetooth cube
+                </SelectItem>
+              </SelectContent>
+            </Select>
+          </SettingsItem>
+        </SettingsSection>
+
+        <SettingsSection title="Visualization">
+          <SettingsItem
+            label="Scramble Preview"
+            description="Show puzzle state visualization"
+          >
             <Switch
               checked={currentPuzzle.scramblePreview}
               onCheckedChange={(checked) =>
                 updatePuzzle(currentPuzzle.id, { scramblePreview: checked })
               }
             />
-          </FieldItem>
+          </SettingsItem>
 
-          {currentPuzzle.scramblePreview && (
-            <FieldItem orientation="horizontal">
-              <FieldLabel>Visualization</FieldLabel>
-              <Select
-                value={currentPuzzle.scramblePreviewVisualization}
-                onValueChange={(value) =>
-                  updatePuzzle(currentPuzzle.id, {
-                    scramblePreviewVisualization: value as "2D" | "3D",
-                  })
-                }
+          <SettingsItem
+            label="Visualization Style"
+            disabled={!currentPuzzle.scramblePreview}
+          >
+            <Select
+              value={currentPuzzle.scramblePreviewVisualization}
+              onValueChange={(value) =>
+                updatePuzzle(currentPuzzle.id, {
+                  scramblePreviewVisualization: value as "2D" | "3D",
+                })
+              }
+            >
+              <SelectTrigger className="w-36">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent align="end" className="w-36">
+                <SelectItem value="2D">2D Net</SelectItem>
+                <SelectItem value="3D">3D Cube</SelectItem>
+              </SelectContent>
+            </Select>
+          </SettingsItem>
+
+          <ScramblePreview
+            scramble=""
+            className="w-full"
+            puzzleType={currentPuzzle.type}
+            visualization={currentPuzzle.scramblePreviewVisualization}
+          />
+        </SettingsSection>
+
+        <SettingsSection title="Timer Stats">
+          <SettingsItem label="Layout Style">
+            <Select
+              value={displayStats.style}
+              onValueChange={(value) =>
+                updatePuzzle(currentPuzzle.id, {
+                  displayStats: {
+                    ...displayStats,
+                    style: value as "cards" | "lines",
+                  },
+                })
+              }
+            >
+              <SelectTrigger className="w-36">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent align="end">
+                <SelectItem value="cards">
+                  <HugeiconsIcon icon={LayoutGridIcon} />
+                  Cards
+                </SelectItem>
+                <SelectItem value="lines">
+                  <HugeiconsIcon icon={Menu02Icon} />
+                  Lines
+                </SelectItem>
+              </SelectContent>
+            </Select>
+          </SettingsItem>
+
+          <SettingsItem label="Orientation">
+            <Select
+              value={displayStats.orientation}
+              onValueChange={(value) =>
+                updatePuzzle(currentPuzzle.id, {
+                  displayStats: {
+                    ...displayStats,
+                    orientation: value as "horizontal" | "vertical",
+                  },
+                })
+              }
+            >
+              <SelectTrigger className="w-36">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent align="end">
+                <SelectItem value="horizontal">
+                  <HugeiconsIcon icon={ArrowHorizontalIcon} />
+                  Horizontal
+                </SelectItem>
+                <SelectItem value="vertical">
+                  <HugeiconsIcon icon={ArrowVerticalIcon} />
+                  Vertical
+                </SelectItem>
+              </SelectContent>
+            </Select>
+          </SettingsItem>
+
+          <SettingsItem
+            label={`Stats (${displayStats.stats.length}/${MAX_STATS})`}
+          >
+            <Button
+              className="border border-border"
+              onClick={addStat}
+              disabled={displayStats.stats.length >= MAX_STATS}
+            >
+              <HugeiconsIcon icon={Add01Icon} />
+              Add Stat
+            </Button>
+          </SettingsItem>
+
+          <div className="space-y-3 p-3">
+            {displayStats.stats.map((stat, index) => (
+              <div
+                className="flex items-center gap-3"
+                key={crypto.randomUUID()}
               >
-                <SelectTrigger className="w-36">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="2d">2D Net</SelectItem>
-                  <SelectItem value="3d">3D Cube</SelectItem>
-                </SelectContent>
-              </Select>
-            </FieldItem>
-          )}
-        </FieldGroup>
-      </FieldSet>
+                <div className="flex flex-col gap-1">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="size-6 text-muted-foreground hover:text-foreground rounded-full"
+                    onClick={() => moveStat(index, "up")}
+                    disabled={index === 0}
+                  >
+                    <HugeiconsIcon icon={ArrowUpIcon} size={14} />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="size-6 text-muted-foreground hover:text-foreground rounded-full"
+                    onClick={() => moveStat(index, "down")}
+                    disabled={index === displayStats.stats.length - 1}
+                  >
+                    <HugeiconsIcon icon={ArrowDownIcon} size={14} />
+                  </Button>
+                </div>
+
+                <div className="flex flex-1 items-center gap-3 min-w-0">
+                  <Select
+                    value={stat.type}
+                    onValueChange={(value) =>
+                      updateStat(index, { type: value as StatType["type"] })
+                    }
+                  >
+                    <SelectTrigger className="w-44 h-9">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {STAT_TYPE_OPTIONS.map((opt) => (
+                        <SelectItem key={opt.value} value={opt.value}>
+                          <HugeiconsIcon
+                            icon={opt.icon}
+                            size={14}
+                            className="mr-2"
+                          />
+                          {opt.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+
+                  <Input
+                    type="number"
+                    min={1}
+                    max={1000}
+                    value={stat.n ?? "0"}
+                    className="w-20"
+                    onChange={(e) =>
+                      updateStat(index, {
+                        n:
+                          e.target.value === "" || e.target.value === "0" ?
+                            Infinity
+                          : parseInt(e.target.value, 10),
+                      })
+                    }
+                  />
+                </div>
+
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="size-6 text-muted-foreground hover:text-danger hover:bg-danger/10"
+                  onClick={() => removeStat(index)}
+                >
+                  <HugeiconsIcon icon={Cancel01Icon} size={14} />
+                </Button>
+              </div>
+            ))}
+          </div>
+        </SettingsSection>
+      </PageBody>
     </Page>
   );
 }

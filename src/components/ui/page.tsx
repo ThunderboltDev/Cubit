@@ -50,7 +50,7 @@ export function PageHeader(props: ComponentProps<"div">) {
   }
 
   return (
-    <div className="sticky top-0 z-20 min-w-dvw -ml-8 -mt-8 bg-secondary/50 backdrop-blur-sm md:static md:bg-transparent md:backdrop-blur-none md:-ml-4 md:mt-0">
+    <div className="sticky top-0 z-20 min-w-dvw -ml-8 -mt-8 border-none md:static md:bg-transparent md:-ml-4 md:mt-0 md:shadow-none">
       <div className="flex h-14 items-center gap-4 px-4">
         <Button
           variant="ghost"
@@ -71,7 +71,7 @@ export function PageTitle(props: ComponentProps<"h1">) {
   return (
     <h1
       className={cn(
-        "text-2xl font-bold tracking-tight",
+        "text-2xl font-medium tracking-tight",
         showNavHeader && "text-lg",
         props.className,
       )}

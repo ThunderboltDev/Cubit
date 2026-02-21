@@ -2,10 +2,11 @@ import {
   FloppyDiskIcon,
   InformationCircleIcon,
   Send,
+  Trash2,
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { createFileRoute } from "@tanstack/react-router";
-import type { ReactNode } from "react";
+import { type ReactNode, useState } from "react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -135,6 +136,8 @@ function SubSection({
 }
 
 function UITestPage() {
+  const [isChecked, setIsChecked] = useState(true);
+
   return (
     <div className="wrapper-xl space-y-12 py-12">
       <div className="space-y-2">
@@ -244,7 +247,7 @@ function UITestPage() {
             <CardBody className="text-muted-foreground">
               Cards can have footers for actions.
             </CardBody>
-            <CardFooter className="flex justify-end gap-2">
+            <CardFooter className="flex justify-end gap-2 duration-fast">
               <Button theme="success">
                 <HugeiconsIcon icon={FloppyDiskIcon} />
                 Save
@@ -288,10 +291,10 @@ function UITestPage() {
               <FieldItem orientation="horizontal">
                 <FieldLabel htmlFor="checkout-country">Country</FieldLabel>
                 <Select>
-                  <SelectTrigger id="checkout-country">
+                  <SelectTrigger className="w-44" id="checkout-country">
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent align="end">
                     <SelectItem value="us">United States</SelectItem>
                     <SelectItem value="uk">United Kingdom</SelectItem>
                     <SelectItem value="ca">Canada</SelectItem>
@@ -316,23 +319,22 @@ function UITestPage() {
                 >
                   Same as shipping address
                 </FieldLabel>
-                <Switch id="checkout-shipping-address" defaultChecked />
+                <Switch
+                  id="checkout-shipping-address"
+                  checked={isChecked}
+                  onCheckedChange={(checked) => setIsChecked(checked)}
+                />
               </FieldItem>
               <FieldItem>
                 <FieldLabel htmlFor="checkout-rating">Rating</FieldLabel>
                 <Slider
                   id="checkout-rating"
                   defaultValue={[3]}
-                  min={1}
-                  max={5}
+                  min={0}
+                  max={4}
                   step={1}
-                  marks={[
-                    { value: 1, label: "Poor" },
-                    { value: 2, label: "Fair" },
-                    { value: 3, label: "Good" },
-                    { value: 4, label: "Very Good" },
-                    { value: 5, label: "Excellent" },
-                  ]}
+                  marks={["Poor", "Fair", "Good", "Very Good", "Excellent"]}
+                  withBadge={false}
                 />
               </FieldItem>
             </FieldGroup>
@@ -403,8 +405,9 @@ function UITestPage() {
                       </p>
                     </AlertDialogBody>
                     <AlertDialogFooter>
-                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogCancel />
                       <AlertDialogAction theme="danger">
+                        <HugeiconsIcon icon={Trash2} />
                         Delete
                       </AlertDialogAction>
                     </AlertDialogFooter>

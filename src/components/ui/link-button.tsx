@@ -1,25 +1,16 @@
 import { Link } from "@tanstack/react-router";
 import type { ComponentProps } from "react";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
 
 type LinkButtonProps = ComponentProps<typeof Link> &
-  ComponentProps<typeof Button> & {
-    buttonClassName?: string;
-  };
+  ComponentProps<typeof Button>;
 
-export function LinkButton({
-  buttonClassName,
-  className,
-  children,
-  onClick,
-  ...props
-}: LinkButtonProps) {
+export function LinkButton({ className, onClick, ...props }: LinkButtonProps) {
   return (
     <Button
       nativeButton={false}
-      className={buttonClassName}
-      render={<Link className={cn("no-underline", className)} {...props} />}
+      className={className}
+      render={<Link {...props} />}
       onClick={onClick}
       {...props}
     />

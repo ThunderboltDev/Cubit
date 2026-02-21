@@ -127,8 +127,6 @@ export function SelectTrigger({
       {...props}
       render={
         <Button
-          variant="outline"
-          theme="default"
           className={cn(
             "text-secondary-foreground text-responsive! inline-flex gap-2 justify-between items-center px-6 min-w-0 whitespace-normal",
             className,

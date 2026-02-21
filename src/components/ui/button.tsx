@@ -4,13 +4,12 @@ import { cn } from "@/lib/utils";
 
 const baseClassName = [
   "inline-flex items-center justify-center gap-1.5 shrink-0",
-  "transition-all duration-300 ease-out",
-  "disabled:active:brightness-100 active:brightness-80",
+  "transition-all duration-200 ease-spring focus-ring",
+  "disabled:active:brightness-100 active:brightness-90",
   "text-sm font-medium whitespace-nowrap",
   "rounded-md no-underline cursor-pointer",
   "[&_svg]:shrink-0 [&_svg]:pointer-events-none",
   "[&_svg:not([class*='size-'])]:size-4.5",
-  "outline-none focus-visible:ring-[3px]",
   "aria-invalid:ring-danger/40 aria-invalid:border-danger",
   "aria-busy:opacity-75 aria-busy:saturate-100 aria-busy:cursor-progress",
   "disabled:opacity-75 disabled:saturate-0 disabled:cursor-not-allowed",
@@ -59,7 +58,7 @@ const transparentThemes = {
 
 const outlineThemes = {
   default:
-    "text-foreground bg-input/30 border-border hover:text-secondary-foreground hover:bg-muted/50",
+    "text-foreground bg-secondary border-border hover:text-secondary-foreground hover:bg-muted/50",
   accent: "text-accent border-accent hover:bg-accent hover:text-white",
   info: "text-info border-info hover:bg-info hover:text-white",
   success: "text-success border-success hover:bg-success hover:text-white",
@@ -68,17 +67,18 @@ const outlineThemes = {
 };
 
 const sizeThemes = {
-  default: "h-9 px-4 py-2 has-[>svg]:px-3",
-  sm: "h-8 !gap-1 px-3 has-[>svg]:px-3",
-  lg: "!text-base !gap-2 h-9.5 px-4 [&_svg:not([class*='size-'])]:!size-5",
-  icon: "size-9",
-  responsive:
+  "default": "h-9 px-4 py-2 has-[>svg]:px-3",
+  "sm": "h-8 !gap-1 px-3 has-[>svg]:px-3",
+  "lg": "!text-base !gap-2 h-9.5 px-4 [&_svg:not([class*='size-'])]:!size-5",
+  "icon": "size-9",
+  "icon-lg": "size-11",
+  "responsive":
     "h-9 px-4 py-2 has-[>svg]:px-3 md:h-8 md:gap-1.5 md:rounded-md md:px-3 md:has-[>svg]:px-2.5",
 };
 
 type ButtonProps = ComponentProps<typeof ButtonPrimitive> & {
   theme?: "default" | "accent" | "info" | "success" | "danger" | "warning";
-  size?: "default" | "sm" | "lg" | "icon" | "responsive";
+  size?: "default" | "sm" | "lg" | "icon" | "icon-lg" | "responsive";
   variant?: "default" | "ghost" | "outline" | "transparent";
 };
 
@@ -103,6 +103,7 @@ function Button({
     <ButtonPrimitive
       data-slot="button"
       className={cn(
+        (variant === "default" || variant === "outline") && "shadow-md",
         themeClassName[theme],
         variantClassName[variant],
         baseClassName,

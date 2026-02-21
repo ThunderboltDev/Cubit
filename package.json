@@ -26,6 +26,7 @@
 		"cubing": "^0.63.0",
 		"dexie": "^4.3.0",
 		"dexie-react-hooks": "^4.2.0",
+		"framer-motion": "^12.34.2",
 		"react": "^19.0.0",
 		"react-dom": "^19.0.0",
 		"react-hotkeys-hook": "^5.2.4",

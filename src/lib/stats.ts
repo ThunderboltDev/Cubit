@@ -1,4 +1,5 @@
 import type { Solve } from "@/types/puzzles";
+import type { Stat, StatType } from "@/types/stats";
 
 export type SolveWithEffectiveTime = Solve & { effectiveTime: number | null };
 
@@ -213,12 +214,10 @@ export function calculateRollingAverage(
   const results: (number | null)[] = [];
 
   for (let i = 0; i < solves.length; i++) {
-    if (i < n - 1) {
-      results.push(null);
-    } else {
-      const window = solves.slice(i - n + 1, i + 1);
-      results.push(calculateAverageOfN(window, n, trimPercentage));
-    }
+    const startIdx = Math.max(0, i - n + 1);
+    const window = solves.slice(startIdx, i + 1);
+
+    results.push(calculateAverageOfN(window, window.length, trimPercentage));
   }
 
   return results;
@@ -233,12 +232,10 @@ export function calculateRollingMean(
   const results: (number | null)[] = [];
 
   for (let i = 0; i < solves.length; i++) {
-    if (i < n - 1) {
-      results.push(null);
-    } else {
-      const window = solves.slice(i - n + 1, i + 1);
-      results.push(calculateMeanOfN(window, n));
-    }
+    const startIdx = Math.max(0, i - n + 1);
+    const window = solves.slice(startIdx, i + 1);
+
+    results.push(calculateMeanOfN(window, window.length));
   }
 
   return results;
@@ -253,11 +250,13 @@ export function calculateRollingConsistency(
   const results: (number | null)[] = [];
 
   for (let i = 0; i < solves.length; i++) {
-    if (i < n - 1) {
+    const startIdx = Math.max(0, i - n + 1);
+    const window = solves.slice(startIdx, i + 1);
+
+    if (window.length < 2) {
       results.push(null);
     } else {
-      const window = solves.slice(i - n + 1, i + 1);
-      results.push(calculateConsistencyOfN(window, n));
+      results.push(calculateConsistencyOfN(window, window.length));
     }
   }
 
@@ -383,4 +382,12 @@ export function calculateOverallStats(
     bestAo12: calculateBestAverage(solves, 12, trimPercentage),
     bestAo100: calculateBestAverage(solves, 100, trimPercentage),
   };
+}
+
+export function getStatLabel(stat: Stat | StatType): string {
+  if (!stat.n || stat.n === Infinity) {
+    return stat.type.slice(0, 1).toUpperCase() + stat.type.slice(1);
+  }
+
+  return `${stat.type.slice(0, 1).toUpperCase()}o${stat.n}`;
 }

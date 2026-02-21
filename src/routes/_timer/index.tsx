@@ -5,6 +5,7 @@ import {
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { createFileRoute } from "@tanstack/react-router";
+import { AnimatePresence, motion } from "framer-motion";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ScramblePreview } from "@/components/timer/scramble-preview";
 import { StatCard } from "@/components/timer/stat-card";
@@ -356,13 +357,15 @@ function TimerPage() {
   const getTimerColor = () => {
     if (timerState === "inspection") {
       const remainingSec = Math.ceil(inspectionTime / 1000);
-      if (remainingSec <= 3) return "text-destructive";
+      if (remainingSec <= 3) return "text-danger";
       if (remainingSec <= 7) return "text-yellow-500";
       return "text-foreground";
     }
+
     if (timerState === "running") return "text-foreground";
     if (timerState === "holding")
-      return isReady ? "text-green-500" : "text-destructive";
+      return isReady ? "text-green-500" : "text-danger";
+
     return "text-foreground";
   };
 
@@ -430,46 +433,69 @@ function TimerPage() {
         aria-label="Timer area. Press and hold to start, release to stop."
       >
         <div className="flex flex-col items-center">
-          <span
+          <motion.span
+            key={timerState === "stopped" ? "stopped" : "running"}
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ type: "spring", stiffness: 300, damping: 25 }}
             className={cn(
               "font-mono text-7xl font-bold leading-[90px]",
               getTimerColor(),
             )}
           >
             {getDisplayText()}
-          </span>
-          <span
-            className={cn(
-              "mt-3 h-7 text-xs uppercase tracking-widest transition-opacity",
-              (
-                timerState === "idle" ||
+          </motion.span>
+          <motion.span
+            initial={{ opacity: 0, y: 10 }}
+            animate={{
+              opacity:
+                (
+                  timerState === "idle" ||
                   timerState === "inspection" ||
                   (timerState === "running" && currentPuzzle.multiphaseEnabled)
-              ) ?
-                "opacity-50"
-              : "opacity-0",
-            )}
+                ) ?
+                  0.5
+                : 0,
+              y: 0,
+            }}
+            className="mt-3 h-7 text-xs uppercase tracking-widest"
           >
             {getHintText()}
-          </span>
+          </motion.span>
         </div>
       </button>
 
-      <div
+      <motion.div
+        initial={false}
+        animate={{ opacity: controlsVisible ? 1 : 0 }}
+        transition={{ duration: 0.2 }}
         className={cn(
-          "pointer-events-none absolute inset-0 z-10 flex flex-col transition-opacity duration-200",
-          controlsVisible ? "opacity-100" : "opacity-0",
+          "pointer-events-none absolute inset-0 z-10 flex flex-col",
         )}
       >
-        <div className="pointer-events-auto flex flex-col gap-3 p-4 pb-0 pt-20 md:pt-4">
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{
+            opacity: controlsVisible ? 1 : 0,
+            y: controlsVisible ? 0 : -20,
+          }}
+          transition={{ duration: 0.3, delay: 0.1 }}
+          className="pointer-events-auto flex flex-col gap-3 p-4 pb-0 pt-20 md:pt-4"
+        >
           <Button
             variant="transparent"
             className="h-auto min-h-[52px] w-full whitespace-normal max-w-xl mx-auto"
             onClick={() => setIsScrambleDialogOpen(true)}
           >
-            <span className="line-clamp-2 text-lg md:text-3xl text-center text-balance font-bold leading-tight">
+            <motion.span
+              key={scramble}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.3 }}
+              className="line-clamp-2 text-lg md:text-3xl text-center text-balance font-bold leading-tight"
+            >
               {scramble}
-            </span>
+            </motion.span>
           </Button>
           <div
             className={cn(
@@ -483,60 +509,122 @@ function TimerPage() {
               visualization={currentPuzzle.scramblePreviewVisualization}
             />
           </div>
-        </div>
+        </motion.div>
 
         <div className="flex-1" />
 
         <div className="pointer-events-auto flex items-center justify-center gap-4 py-4">
-          {timerState === "stopped" && currentSolve && (
-            <>
-              <Button
-                className="rounded-full"
-                variant={currentSolve?.penalty === "+2" ? "default" : "outline"}
-                onClick={() =>
-                  updatePenalty(
-                    currentSolve.id,
-                    currentSolve.penalty === "+2" ? "OK" : "+2",
-                  )
-                }
-              >
-                <HugeiconsIcon icon={Flag02Icon} />
-              </Button>
-              <Button
-                className="rounded-full"
-                theme={currentSolve?.penalty === "DNF" ? "danger" : "default"}
-                onClick={() =>
-                  updatePenalty(
-                    currentSolve.id,
-                    currentSolve.penalty === "DNF" ? "OK" : "DNF",
-                  )
-                }
-              >
-                <HugeiconsIcon icon={UnavailableIcon} />
-              </Button>
-              <Button
-                theme="danger"
-                className="rounded-full"
-                onClick={() => setIsDeleteDialogOpen(true)}
-              >
-                <HugeiconsIcon icon={Delete02Icon} />
-              </Button>
-            </>
-          )}
+          <AnimatePresence mode="popLayout">
+            {timerState === "stopped" && currentSolve && (
+              <>
+                <motion.div
+                  key="flag"
+                  initial={{ scale: 0, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  exit={{ scale: 0, opacity: 0 }}
+                  transition={{ type: "spring", stiffness: 500, damping: 25 }}
+                >
+                  <Button
+                    className="group/button rounded-full"
+                    variant={
+                      currentSolve?.penalty === "+2" ? "default" : "outline"
+                    }
+                    onClick={() =>
+                      updatePenalty(
+                        currentSolve.id,
+                        currentSolve.penalty === "+2" ? "OK" : "+2",
+                      )
+                    }
+                  >
+                    <HugeiconsIcon
+                      className="group-hover/button:scale-95 group-hover/button:rotate-12"
+                      icon={Flag02Icon}
+                    />
+                  </Button>
+                </motion.div>
+                <motion.div
+                  key="unavailable"
+                  initial={{ scale: 0, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  exit={{ scale: 0, opacity: 0 }}
+                  transition={{
+                    type: "spring",
+                    stiffness: 500,
+                    damping: 25,
+                    delay: 0.05,
+                  }}
+                >
+                  <Button
+                    className="group/button rounded-full"
+                    theme={
+                      currentSolve?.penalty === "DNF" ? "danger" : "default"
+                    }
+                    onClick={() =>
+                      updatePenalty(
+                        currentSolve.id,
+                        currentSolve.penalty === "DNF" ? "OK" : "DNF",
+                      )
+                    }
+                  >
+                    <HugeiconsIcon
+                      className="group-hover/button:scale-95 group-hover/button:rotate-180"
+                      icon={UnavailableIcon}
+                    />
+                  </Button>
+                </motion.div>
+                <motion.div
+                  key="delete"
+                  initial={{ scale: 0, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  exit={{ scale: 0, opacity: 0 }}
+                  transition={{
+                    type: "spring",
+                    stiffness: 500,
+                    damping: 25,
+                    delay: 0.1,
+                  }}
+                >
+                  <Button
+                    theme="danger"
+                    className="group/button rounded-full"
+                    onClick={() => setIsDeleteDialogOpen(true)}
+                  >
+                    <HugeiconsIcon
+                      className="group-hover/button:scale-95 group-hover/button:rotate-180"
+                      icon={Delete02Icon}
+                    />
+                  </Button>
+                </motion.div>
+              </>
+            )}
+          </AnimatePresence>
         </div>
 
-        <div className="pointer-events-auto flex flex-col w-full p-4 pb-24">
-          <div className="flex flex-row justify-center gap-6">
-            {stats?.stats.map((stat) => (
-              <StatCard
-                key={stat.label}
-                stat={stat}
-                style={currentPuzzle.displayStats.style}
-              />
+        <div className="pointer-events-auto flex flex-col wrapper-md pb-26">
+          <motion.div
+            initial={false}
+            animate={{ opacity: controlsVisible ? 1 : 0 }}
+            className="flex flex-row justify-center gap-4"
+          >
+            {stats?.stats.map((stat, index) => (
+              <motion.div
+                key={stat.type + stat.n}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{
+                  opacity: controlsVisible ? 1 : 0,
+                  y: controlsVisible ? 0 : 20,
+                }}
+                transition={{ delay: 0.1 + index * 0.05, duration: 0.3 }}
+              >
+                <StatCard
+                  stat={stat}
+                  style={currentPuzzle.displayStats.style}
+                />
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
-      </div>
+      </motion.div>
 
       <Dialog
         open={isScrambleDialogOpen}

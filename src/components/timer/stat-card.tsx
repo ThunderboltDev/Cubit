@@ -1,4 +1,5 @@
 import { formatTime } from "@/lib/format-time";
+import { getStatLabel } from "@/lib/stats";
 import type { Stat, StatStyle } from "@/types/stats";
 
 interface StatCardProps {
@@ -11,7 +12,7 @@ export function StatCard({ stat, style }: StatCardProps) {
     return (
       <div className="flex flex-row items-center justify-between py-2">
         <span className="text-sm font-medium text-foreground">
-          {stat.label}:
+          {getStatLabel(stat)}:
         </span>
         <span className="font-mono font-semibold text-foreground">
           {formatTime(stat.value)}
@@ -23,7 +24,7 @@ export function StatCard({ stat, style }: StatCardProps) {
   return (
     <div className="flex flex-col items-center justify-center rounded-xl min-w-[80px] flex-1 bg-secondary p-3">
       <span className="uppercase tracking-wide text-muted-foreground text-xs mb-1">
-        {stat.label}
+        {getStatLabel(stat)}
       </span>
       <span className="font-mono font-semibold truncate text-sm">
         {formatTime(stat.value)}

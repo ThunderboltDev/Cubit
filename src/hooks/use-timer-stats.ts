@@ -21,15 +21,14 @@ export function useTimerStats(): DisplayStats | null {
     const { displayStats, trimPercentage } = currentPuzzle;
     const statsWithValues: Stat[] = [];
 
-    for (const statType of displayStats.stats) {
+    for (const stat of displayStats.stats) {
       let value: number | null = null;
-      let label = "";
       let isNewRecord = false;
 
-      switch (statType.type) {
-        case "aoN": {
-          const n = statType.n === -1 ? Infinity : statType.n;
-          label = n === Infinity ? "AoAll" : `Ao${statType.n}`;
+      const n = !stat.n ? Infinity : stat.n;
+
+      switch (stat.type) {
+        case "average": {
           value = calculateAverageOfN(solves, n, trimPercentage);
 
           if (value === null) break;
@@ -44,9 +43,7 @@ export function useTimerStats(): DisplayStats | null {
 
           break;
         }
-        case "boN": {
-          const n = statType.n === -1 ? Infinity : statType.n;
-          label = n === Infinity ? "Best" : `Bo${statType.n}`;
+        case "best": {
           value = calculateBestOfN(solves, n);
 
           if (value === null) break;
@@ -61,8 +58,6 @@ export function useTimerStats(): DisplayStats | null {
           break;
         }
         case "mean": {
-          const n = statType.n === -1 ? Infinity : statType.n;
-          label = n === Infinity ? "Mean" : `Mo${statType.n}`;
           value = calculateMeanOfN(solves, n);
 
           if (value === null) break;
@@ -77,8 +72,6 @@ export function useTimerStats(): DisplayStats | null {
           break;
         }
         case "consistency": {
-          const n = statType.n === -1 ? Infinity : statType.n;
-          label = n === Infinity ? "Consistency" : `Co${statType.n}`;
           value = calculateConsistencyOfN(solves, n);
 
           if (value === null) break;
@@ -94,7 +87,12 @@ export function useTimerStats(): DisplayStats | null {
         }
       }
 
-      statsWithValues.push({ label, value, isNewRecord });
+      statsWithValues.push({
+        value,
+        type: stat.type,
+        n,
+        isNewRecord,
+      });
     }
 
     return {

@@ -70,6 +70,7 @@ function Badge({
     <span
       data-slot="badge"
       className={cn(
+        variant === "default" && "shadow-sm",
         variantClassName[variant],
         baseClassName,
         sizeClassName,

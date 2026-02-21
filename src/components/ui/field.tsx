@@ -51,7 +51,7 @@ function FieldGroup({ className, ...props }: ComponentProps<"div">) {
 }
 
 const fieldVariants = cva(
-  "data-[invalid=true]:text-destructive gap-1 group/field flex w-full",
+  "data-[invalid=true]:text-danger gap-1 group/field flex w-full",
   {
     variants: {
       orientation: {

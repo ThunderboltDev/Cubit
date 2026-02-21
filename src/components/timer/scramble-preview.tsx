@@ -1,9 +1,12 @@
+import { AlertCircleIcon } from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
 import {
   type PuzzleID,
   TwistyPlayer,
   type VisualizationFormat,
 } from "cubing/twisty";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import { cn } from "@/lib/utils";
 import type { PuzzleType } from "@/types/puzzles";
 
 interface ScramblePreviewProps {
@@ -43,35 +46,84 @@ export function ScramblePreview({
   scramble,
   puzzleType,
   visualization,
+  className,
 }: ScramblePreviewProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const playerRef = useRef<TwistyPlayer | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!containerRef.current) return;
+    setError(null);
 
-    const player = new TwistyPlayer({
-      puzzle: puzzleTypeMap[puzzleType] || "3x3x3",
-      alg: scramble,
-      visualization: visualization,
-      hintFacelets: "none",
-      controlPanel: "none",
-      background: "none",
-    });
+    if (!containerRef.current) {
+      return;
+    }
 
-    playerRef.current = player;
-    containerRef.current.appendChild(player);
+    const container = containerRef.current;
+    let errorUnsubscribe: (() => void) | null = null;
 
-    return () => {
-      player.remove();
-      playerRef.current = null;
-    };
+    try {
+      const player = new TwistyPlayer({
+        puzzle: puzzleTypeMap[puzzleType] || "3x3x3",
+        alg: scramble,
+        visualization: visualization,
+        hintFacelets: "none",
+        controlPanel: "none",
+        background: "none",
+      });
+
+      playerRef.current = player;
+      container.appendChild(player);
+
+      const errorTracker = player.experimentalModel.userVisibleErrorTracker;
+
+      const handleError = (errorData: { errors: string[] }) => {
+        if (errorData.errors.length > 0) {
+          const errorMsg = errorData.errors.join(", ");
+          setError(errorMsg);
+          console.error("TwistyPlayer Error:", errorMsg);
+        }
+      };
+
+      errorTracker.addFreshListener(handleError);
+      errorUnsubscribe = () => errorTracker.removeFreshListener(handleError);
+
+      errorTracker.get().then(handleError);
+
+      return () => {
+        errorUnsubscribe?.();
+        player.remove();
+        playerRef.current = null;
+      };
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Invalid configuration";
+      setError(msg);
+      console.error("ScramblePreview constructor error:", err);
+    }
   }, [puzzleType, visualization, scramble]);
+
+  if (error) {
+    return (
+      <div
+        key="error"
+        className={cn(
+          "flex flex-col items-center justify-center h-32 w-48 text-danger gap-2 p-2 text-center",
+          className,
+        )}
+      >
+        <HugeiconsIcon icon={AlertCircleIcon} className="size-12" />
+        <span className="text-xs font-medium leading-tight">{error}</span>
+      </div>
+    );
+  }
 
   return (
     <div
       ref={containerRef}
-      className="flex items-center justify-center h-32 w-48 **:h-32 **:w-48"
+      className={cn(
+        "flex items-center justify-center h-32 w-48 **:h-32 **:w-48",
+        className,
+      )}
     />
   );
 }

@@ -19,3 +19,6 @@ yarn.lock
 /playwright/.cache/
 .tanstack
 .vscode
+
+.agent/
+.agents/

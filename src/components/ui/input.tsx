@@ -2,11 +2,17 @@ import { Input as InputPrimitive } from "@base-ui/react/input";
 import type { ComponentProps } from "react";
 import { cn } from "@/lib/utils";
 
-function Input({ className, type, ...props }: ComponentProps<"input">) {
+function Input({
+  className,
+  type,
+  inputMode,
+  ...props
+}: ComponentProps<"input">) {
   return (
     <InputPrimitive
-      type={type}
       data-slot="input"
+      type={type === "number" ? "text" : type}
+      inputMode={type === "number" ? "numeric" : inputMode}
       className={cn(
         "input",
         type === "file" && "cursor-pointer",

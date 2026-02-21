@@ -13,9 +13,7 @@
   --muted: oklch(0.99 0 0);
   --muted-foreground: oklch(0.45 0 0);
 
-  --ring: oklch(0.45 0 0);
-  --input: oklch(0.9 0 0);
-
+  --inset: oklch(0.9 0 0);
   --border: oklch(0 0 0 / 12%);
 
   --accent: oklch(0.58 0.2 245);
@@ -27,8 +25,37 @@
 
   --radius: 0.65rem;
 
-  --font-sans: "Nunito Variable", system-ui, sans-serif;
-  --font-mono: "JetBrains Mono Variable", monospace;
+  --font-sans:
+    "Nunito Variable", ui-sans-serif, system-ui, sans-serif,
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --font-mono:
+    "JetBrains Mono Variable", ui-monospace, SFMono-Regular, Menlo, Monaco,
+    Consolas, "Liberation Mono", "Courier New", monospace;
+
+  --shadow-sm:
+    0 1px 2px 0 oklch(0 0 0 / 0.1), 0 1px 3px 0 oklch(0 0 0 / 0.08),
+    inset 0 3px 8px -5px oklch(1 0 0 / 0.6),
+    inset 0 1px 16px -9px oklch(1 0 0 / 0.4);
+  --shadow-md:
+    0 4px 6px -1px oklch(0 0 0 / 0.12), 0 4px 12px -2px oklch(0 0 0 / 0.1),
+    inset 0 3px 10px -7px oklch(1 0 0 / 0.7),
+    inset 0 1px 20px -11px oklch(1 0 0 / 0.5);
+  --shadow-lg:
+    0 10px 15px -3px oklch(0 0 0 / 0.12), 0 8px 16px -4px oklch(0 0 0 / 0.1),
+    inset 0 3px 14px -9px oklch(1 0 0 / 0.8),
+    inset 0 1px 24px -13px oklch(1 0 0 / 0.55);
+
+  --drop-shadow-sm: 0 1px 2px oklch(0 0 0 / 0.1), 0 2px 4px oklch(0 0 0 / 0.08);
+  --drop-shadow-md:
+    0 4px 6px oklch(0 0 0 / 0.12), 0 4px 12px oklch(0 0 0 / 0.1);
+  --drop-shadow-lg:
+    0 10px 15px oklch(0 0 0 / 0.12), 0 8px 16px oklch(0 0 0 / 0.1);
+
+  --inset-shadow:
+    inset 0 2px 4px 0 oklch(0 0 0 / 0.12),
+    inset 0 1px 2px -1px oklch(0 0 0 / 0.08),
+    inset 0 4px 14px -9px oklch(1 0 0 / 0.6),
+    inset 0 1px 24px -13px oklch(1 0 0 / 0.4);
 }
 
 .dark {
@@ -41,10 +68,33 @@
   --muted: oklch(0.26 0 0);
   --muted-foreground: oklch(0.65 0 0);
 
-  --ring: oklch(0.65 0 0);
-  --input: oklch(0.17 0 0);
-
+  --inset: oklch(0.17 0 0);
   --border: oklch(1 0 0 / 8%);
+
+  --shadow-sm:
+    0 1px 2px 0 oklch(0 0 0 / 0.25), 0 1px 3px 0 oklch(0 0 0 / 0.2),
+    inset 0 3px 8px -5px oklch(1 0 0 / 0.25),
+    inset 0 1px 16px -9px oklch(1 0 0 / 0.15);
+  --shadow-md:
+    0 4px 6px -1px oklch(0 0 0 / 0.3), 0 4px 12px -2px oklch(0 0 0 / 0.25),
+    inset 0 3px 10px -7px oklch(1 0 0 / 0.3),
+    inset 0 1px 20px -11px oklch(1 0 0 / 0.18);
+  --shadow-lg:
+    0 10px 15px -3px oklch(0 0 0 / 0.3), 0 8px 16px -4px oklch(0 0 0 / 0.25),
+    inset 0 3px 14px -9px oklch(1 0 0 / 0.35),
+    inset 0 1px 24px -13px oklch(1 0 0 / 0.2);
+
+  --drop-shadow-sm: 0 1px 2px oklch(0 0 0 / 0.25), 0 2px 4px oklch(0 0 0 / 0.2);
+  --drop-shadow-md:
+    0 4px 6px oklch(0 0 0 / 0.3), 0 4px 12px oklch(0 0 0 / 0.25);
+  --drop-shadow-lg:
+    0 10px 15px oklch(0 0 0 / 0.3), 0 8px 16px oklch(0 0 0 / 0.25);
+
+  --inset-shadow:
+    inset 0 2px 4px 0 oklch(0 0 0 / 0.25),
+    inset 0 1px 2px -1px oklch(0 0 0 / 0.2),
+    inset 0 4px 14px -9px oklch(1 0 0 / 0.25),
+    inset 0 1px 24px -13px oklch(1 0 0 / 0.15);
 }
 
 @theme inline {
@@ -64,8 +114,7 @@
   --color-danger: var(--danger);
   --color-info: var(--info);
 
-  --color-ring: var(--ring);
-  --color-input: var(--input);
+  --color-inset: var(--inset);
   --color-border: var(--border);
 
   --radius-xs: calc(var(--radius) - 4px);
@@ -82,8 +131,22 @@
 
   --breakpoint-xs: 30rem;
 
-  --animate-accordion-down: accordion-down 0.2s ease-out;
-  --animate-accordion-up: accordion-up 0.2s ease-out;
+  --animate-accordion-down: accordion-down 0.2s var(--ease-gentle);
+  --animate-accordion-up: accordion-up 0.2s var(--ease-gentle);
+
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-snappy: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  --ease-gentle: cubic-bezier(0.5, 1.8, 0.3, 0.8);
+
+  --shadow-sm: var(--shadow-sm);
+  --shadow-md: var(--shadow-md);
+  --shadow-lg: var(--shadow-lg);
+
+  --drop-shadow-sm: var(--drop-shadow-sm);
+  --drop-shadow-md: var(--drop-shadow-md);
+  --drop-shadow-lg: var(--drop-shadow-lg);
+
+  --inset-shadow: var(--inset-shadow);
 
   @keyframes accordion-down {
     from {
@@ -111,6 +174,7 @@
 
   html {
     @apply scroll-pt-4 scroll-smooth scrollbar-4;
+    @apply font-light;
   }
 
   body {
@@ -121,23 +185,14 @@
   }
 
   a {
-    @apply focus-visible:outline-accent/50 focus-visible:outline-1;
-    @apply transition-colors duration-150 ease-linear;
+    @apply outline-accent/50 focus-visible:outline-1;
+    @apply duration-200 ease-spring;
     @apply rounded-[1px];
   }
 }
 
 @utility text-responsive {
   @apply text-base md:text-sm;
-}
-
-@utility h-view {
-  height: calc(100vh - 3rem);
-  max-height: calc(100vh - 3rem);
-}
-
-@utility all-unset {
-  all: unset;
 }
 
 @utility link {
@@ -149,42 +204,21 @@
 @utility input {
   @apply h-9 flex w-full;
   @apply text-secondary-foreground placeholder:text-muted-foreground text-responsive;
-  @apply rounded-sm border border-border bg-input;
+  @apply rounded-sm border border-border bg-inset;
   @apply px-2.5 py-1 inset-shadow-sm;
-  @apply outline-none transition-fast;
+  @apply outline-none duration-200;
   @apply disabled:opacity-50 disabled:cursor-not-allowed;
   @apply focus-visible:border-accent focus-visible:ring-3 focus-visible:ring-accent/50;
   @apply aria-invalid:border-danger/75 aria-invalid:text-danger/75;
   @apply aria-invalid:ring-danger/50 aria-invalid:placeholder:text-danger/75;
 }
 
-@utility shine {
-  @apply relative;
-
-  &::before {
-    content: "";
-
-    @apply absolute top-0 left-[10%];
-    @apply w-4 h-full z-10 pointer-events-none;
-    @apply bg-white/10 -skew-4 rounded-none;
-    @apply transition-all duration-300 ease-out;
-  }
-
-  &:hover::before {
-    @apply left-[75%] w-6;
-  }
-}
-
 @utility pb-mobile-nav {
   padding-bottom: calc(4rem + env(safe-area-inset-bottom, 0px));
 }
 
-@utility transition-fast {
-  @apply transition-all duration-150 ease-linear;
-}
-
-@utility transition-slow {
-  @apply transition-all duration-300 ease-linear;
+@utility focus-ring {
+  @apply focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-accent/50;
 }
 
 @utility wrapper-* {

@@ -1,4 +1,7 @@
+"use client";
+
 import { Switch as SwitchPrimitive } from "@base-ui/react/switch";
+import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
 const sizeClasses = {
@@ -7,9 +10,14 @@ const sizeClasses = {
     default: "h-[24px] w-[41px]",
   },
   thumb: {
-    sm: "size-3.5 data-checked:translate-x-[14px] data-unchecked:translate-x-0.5",
-    default:
-      "size-5 data-checked:translate-x-[19px] data-unchecked:translate-x-0.5",
+    sm: {
+      unchecked: 2,
+      checked: 14,
+    },
+    default: {
+      unchecked: 2,
+      checked: 19,
+    },
   },
 };
 
@@ -17,30 +25,49 @@ interface SwitchProps extends SwitchPrimitive.Root.Props {
   size?: "sm" | "default";
 }
 
-function Switch({ className, size = "default", ...props }: SwitchProps) {
+function Switch({
+  className,
+  size = "default",
+  checked,
+  ...props
+}: SwitchProps) {
   return (
     <SwitchPrimitive.Root
       data-slot="switch"
       className={cn(
-        "peer group/switch relative inline-flex items-center shrink-0 transition-fast",
-        "data-checked:bg-accent data-unchecked:bg-input",
-        "rounded-full border-none outline-none",
-        "inset-shadow-sm cursor-pointer",
-        "focus-visible:ring-2 focus-visible:ring-accent/50",
+        "peer group/switch relative inline-flex items-center shrink-0",
+        "data-checked:bg-accent data-unchecked:bg-inset",
+        "rounded-full border-none outline-none focus-ring",
+        "inset-shadow cursor-pointer",
         "data-disabled:cursor-not-allowed data-disabled:opacity-50",
         "after:absolute after:-inset-x-3 after:-inset-y-2",
         sizeClasses.root[size],
         className,
       )}
+      checked={checked}
       {...props}
     >
-      <SwitchPrimitive.Thumb
-        data-slot="switch-thumb"
-        className={cn(
-          "bg-white rounded-full pointer-events-none block ring-0 transition-fast absolute left-0",
-          sizeClasses.thumb[size],
-        )}
-      />
+      <SwitchPrimitive.Thumb data-slot="switch-thumb">
+        <motion.span
+          className={cn(
+            "bg-white rounded-full pointer-events-none block ring-0 shadow-sm absolute left-0 top-1/2 -translate-y-1/2",
+            size === "sm" ? "size-3.5" : "size-5",
+          )}
+          initial={false}
+          animate={{
+            x:
+              checked ?
+                sizeClasses.thumb[size].checked
+              : sizeClasses.thumb[size].unchecked,
+          }}
+          transition={{
+            type: "spring",
+            stiffness: 600,
+            damping: 30,
+          }}
+          layout
+        />
+      </SwitchPrimitive.Thumb>
     </SwitchPrimitive.Root>
   );
 }

@@ -6,7 +6,7 @@ export type PuzzleType = (typeof PUZZLE_TYPES)[number];
 
 export type Penalty = "OK" | "+2" | "DNF";
 
-export type InputMethod = "timer" | "typing";
+export type InputMethod = "timer" | "manual" | "stackmat" | "bluetooth";
 
 export type Puzzle = {
   id: string;
