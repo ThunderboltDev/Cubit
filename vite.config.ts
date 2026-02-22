@@ -27,7 +27,7 @@ export default defineConfig({
       prerender: {
         enabled: true,
         crawlLinks: true,
-        failOnError: false,
+        failOnError: true,
         onSuccess: ({ page }) => {
           console.log(`[PRERENDER INFO] Rendered : ${page.path}`);
         },
