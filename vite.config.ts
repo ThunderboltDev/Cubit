@@ -37,6 +37,6 @@ export default defineConfig({
     viteReact(),
   ],
   ssr: {
-    noExternal: ["cubing", "cubing/scramble", "cubing/twisty"],
+    external: ["cubing", "cubing/scramble", "cubing/twisty"],
   },
 });

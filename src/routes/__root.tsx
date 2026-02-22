@@ -1,4 +1,8 @@
 /// <reference types="vite/client" />
+if (typeof window === "undefined") {
+  console.log("[SSR] Starting server render");
+}
+
 import { createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 import appCss from "@/app.css?url";
@@ -9,6 +13,7 @@ import { seo } from "@/lib/seo";
 
 import "@fontsource-variable/nunito/wght.css";
 import "@fontsource-variable/jetbrains-mono/wght.css";
+import type { PropsWithChildren } from "react";
 
 export const Route = createRootRoute({
   head: () => ({
@@ -47,7 +52,11 @@ export const Route = createRootRoute({
   shellComponent: RootDocument,
 });
 
-function RootDocument({ children }: { children: React.ReactNode }) {
+function RootDocument({ children }: PropsWithChildren) {
+  if (typeof window === "undefined") {
+    console.log("[SSR] Rendering RootDocument");
+  }
+
   return (
     <html lang="en">
       <head>
