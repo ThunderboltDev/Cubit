@@ -120,7 +120,7 @@ function PuzzleConfigurationPage() {
 	};
 
 	return (
-		<Page>
+		<Page className="wrapper-md!">
 			<PageHeader>
 				<PageTitle>Puzzle Configuration</PageTitle>
 				<PageDescription>Customize your solving experience</PageDescription>
