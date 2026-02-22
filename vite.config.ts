@@ -24,14 +24,6 @@ export default defineConfig({
       projects: ["./tsconfig.json"],
     }),
     tanstackStart({
-      prerender: {
-        enabled: true,
-        crawlLinks: true,
-        failOnError: true,
-        onSuccess: ({ page }) => {
-          console.log(`[PRERENDER INFO] Rendered : ${page.path}`);
-        },
-      },
       srcDirectory: "src",
     }),
     viteReact(),
