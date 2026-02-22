@@ -6,43 +6,60 @@ import { ScrambleProvider } from "@/contexts/scramble";
 import { useSettingsStore } from "@/stores/settings";
 
 export function Providers({ children }: PropsWithChildren) {
-	const theme = useSettingsStore((store) => store.theme);
-	const setTheme = useSettingsStore((store) => store.setTheme);
+  const theme = useSettingsStore((store) => store.theme);
+  const setTheme = useSettingsStore((store) => store.setTheme);
 
-	const applyTheme = (newTheme: typeof theme) => {
-		const root = document.documentElement;
-		root.classList.remove("light", "dark");
+  const applyTheme = (newTheme: typeof theme) => {
+    const root = document.documentElement;
+    root.classList.remove("light", "dark");
 
-		if (newTheme === "system") {
-			const prefersDark = window.matchMedia(
-				"(prefers-color-scheme: dark)"
-			).matches;
-			root.classList.add(prefersDark ? "dark" : "light");
-		} else {
-			root.classList.add(newTheme);
-		}
-	};
+    let effectiveTheme: "light" | "dark";
 
-	// biome-ignore lint/correctness/useExhaustiveDependencies: initial theme load
-	useEffect(() => {
-		applyTheme(theme);
+    if (newTheme === "system") {
+      effectiveTheme =
+        window.matchMedia("(prefers-color-scheme: dark)").matches ?
+          "dark"
+        : "light";
+    } else {
+      effectiveTheme = newTheme;
+    }
 
-		const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
-		const handleChange = () => {
-			if (useSettingsStore.getState().theme === "system") {
-				applyTheme("system");
-			}
-		};
+    root.classList.add(effectiveTheme);
 
-		mediaQuery.addEventListener("change", handleChange);
-		return () => mediaQuery.removeEventListener("change", handleChange);
-	}, [theme]);
+    document.querySelectorAll('meta[name="theme-color"]').forEach((element) => {
+      element.remove();
+    });
 
-	const toggleTheme = () => {
-		setTheme(theme === "dark" ? "light" : "dark");
-	};
+    const meta = document.createElement("meta");
+    meta.name = "theme-color";
+    meta.content = effectiveTheme === "dark" ? "#1f1f1f" : "#e8e8e8";
+    document.head.appendChild(meta);
+  };
 
-	useHotkeys("l", toggleTheme, { preventDefault: true });
+  // biome-ignore lint/correctness/useExhaustiveDependencies: theme load
+  useEffect(() => {
+    applyTheme(theme);
 
-	return <ScrambleProvider>{children}</ScrambleProvider>;
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+    const handleChange = () => {
+      if (useSettingsStore.getState().theme === "system") {
+        applyTheme("system");
+      }
+    };
+
+    mediaQuery.addEventListener("change", handleChange);
+    return () => mediaQuery.removeEventListener("change", handleChange);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme(
+      theme === "dark" ? "light"
+      : theme === "light" ? "dark"
+      : "dark",
+    );
+  };
+
+  useHotkeys("l", toggleTheme, { preventDefault: true });
+
+  return <ScrambleProvider>{children}</ScrambleProvider>;
 }
