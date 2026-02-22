@@ -28,6 +28,9 @@ export default defineConfig({
     }),
     viteReact(),
   ],
+  optimizeDeps: {
+    exclude: ["cubing"],
+  },
   ssr: {
     noExternal: ["cubing", "cubing/scramble", "cubing/twisty"],
   },
