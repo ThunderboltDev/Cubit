@@ -11,7 +11,7 @@ type PreferencesState = {
   toggleSidebar: () => void;
 };
 
-export const usePreferences = create<PreferencesState>()(
+export const usePreferencesStore = create<PreferencesState>()(
   persist(
     (set) => ({
       sidebarOpen: true,

@@ -32,6 +32,7 @@ export default defineConfig({
     exclude: ["cubing"],
   },
   ssr: {
-    noExternal: ["cubing", "cubing/scramble", "cubing/twisty"],
+    external: ["cubing"],
+    noExternal: [],
   },
 });
