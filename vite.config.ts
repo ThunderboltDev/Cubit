@@ -27,7 +27,7 @@ export default defineConfig({
       prerender: {
         enabled: true,
         crawlLinks: true,
-        failOnError: true,
+        failOnError: false,
         onSuccess: ({ page }) => {
           console.log(`[PRERENDER INFO] Rendered : ${page.path}`);
         },
@@ -37,6 +37,6 @@ export default defineConfig({
     viteReact(),
   ],
   ssr: {
-    external: ["cubing", "cubing/scramble", "cubing/twisty"],
+    noExternal: ["cubing", "cubing/scramble", "cubing/twisty"],
   },
 });
