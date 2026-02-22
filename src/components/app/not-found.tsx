@@ -26,11 +26,7 @@ export function NotFound({ children }: PropsWithChildren) {
 				</div>
 
 				<div className="flex items-center justify-center gap-4">
-					<Button
-						variant="outline"
-						className="gap-2"
-						onClick={() => router.history.back()}
-					>
+					<Button className="gap-2" onClick={() => router.history.back()}>
 						<HugeiconsIcon icon={ArrowLeftIcon} />
 						Go back
 					</Button>

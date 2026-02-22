@@ -6,27 +6,27 @@ import { defineConfig } from "vite";
 import tsConfigPaths from "vite-tsconfig-paths";
 
 export default defineConfig({
-  server: {
-    port: 3000,
-  },
-  worker: {
-    format: "es",
-  },
-  plugins: [
-    nitro(),
-    tailwindcss(),
-    tsConfigPaths({
-      projects: ["./tsconfig.json"],
-    }),
-    tanstackStart({
-      prerender: {
-        enabled: false,
-      },
-      srcDirectory: "src",
-    }),
-    viteReact(),
-  ],
-  ssr: {
-    external: ["cubing", "cubing/scramble", "cubing/twisty"],
-  },
+	server: {
+		port: 3000,
+	},
+	worker: {
+		format: "es",
+	},
+	plugins: [
+		nitro(),
+		tailwindcss(),
+		tsConfigPaths({
+			projects: ["./tsconfig.json"],
+		}),
+		tanstackStart({
+			prerender: {
+				enabled: false,
+			},
+			srcDirectory: "src",
+		}),
+		viteReact(),
+	],
+	ssr: {
+		external: ["cubing", "cubing/scramble", "cubing/twisty"],
+	},
 });

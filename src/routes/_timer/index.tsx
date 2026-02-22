@@ -525,9 +525,6 @@ function TimerPage() {
 								>
 									<Button
 										className="group/button rounded-full"
-										variant={
-											currentSolve?.penalty === "+2" ? "default" : "outline"
-										}
 										onClick={() =>
 											updatePenalty(
 												currentSolve.id,

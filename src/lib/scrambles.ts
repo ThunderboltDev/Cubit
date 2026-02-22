@@ -5,16 +5,16 @@ const isBrowser = typeof document !== "undefined";
 let cubingModule: typeof import("cubing/scramble") | null = null;
 
 export async function generateScramble(
-  puzzleType: PuzzleType,
+	puzzleType: PuzzleType
 ): Promise<string> {
-  if (!isBrowser) {
-    return "Generating scramble...";
-  }
+	if (!isBrowser) {
+		return "Generating scramble...";
+	}
 
-  if (!cubingModule) {
-    cubingModule = await import("cubing/scramble");
-  }
+	if (!cubingModule) {
+		cubingModule = await import("cubing/scramble");
+	}
 
-  const scramble = await cubingModule.randomScrambleForEvent(puzzleType);
-  return scramble.toString();
+	const scramble = await cubingModule.randomScrambleForEvent(puzzleType);
+	return scramble.toString();
 }
