@@ -1,0 +1,256 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "@cubing/icons/css";
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  --background: oklch(0.93 0 0);
+  --foreground: oklch(0.14 0 0);
+
+  --secondary: oklch(0.96 0 0);
+  --secondary-foreground: oklch(0.2 0 0);
+
+  --muted: oklch(0.99 0 0);
+  --muted-foreground: oklch(0.45 0 0);
+
+  --inset: oklch(0.9 0 0);
+  --border: oklch(0 0 0 / 10%);
+
+  --accent: oklch(0.55 0.2 245);
+
+  --danger: oklch(0.55 0.2 28);
+  --warning: oklch(0.57 0.2 85);
+  --success: oklch(0.55 0.2 155);
+
+  --radius: 0.5rem;
+
+  --font-sans:
+    "Rubik Variable", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
+    "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --font-mono:
+    "JetBrains Mono Variable", ui-monospace, SFMono-Regular, Menlo, Monaco,
+    Consolas, "Liberation Mono", "Courier New", monospace;
+
+  --shadow-xs:
+    0 1px 3px oklch(0 0 0 / 0.06), 0 1px 2px oklch(0 0 0 / 0.1),
+    inset 0 1px 1px -0.5px oklch(1 0 0 / 0.75);
+
+  --shadow-sm:
+    0 1px 3px oklch(0 0 0 / 0.06), 0 1px 2px oklch(0 0 0 / 0.1),
+    inset 0 1.5px 1.5px -0.75px oklch(1 0 0 / 0.75);
+
+  --shadow-md:
+    0 3px 6px oklch(0 0 0 / 0.06), 0 2px 4px oklch(0 0 0 / 0.1),
+    inset 0 2px 2px -1px oklch(1 0 0 / 0.75);
+
+  --shadow-lg:
+    0 6px 12px oklch(0 0 0 / 0.06), 0 4px 6px oklch(0 0 0 / 0.1),
+    inset 0 2.5px 2.5px -1.25px oklch(1 0 0 / 0.75);
+
+  --shadow-xl:
+    0 12px 20px oklch(0 0 0 / 0.06), 0 8px 10px oklch(0 0 0 / 0.1),
+    inset 0 3px 3px -1.5px oklch(1 0 0 / 0.75);
+
+  --inset-shadow-sm:
+    inset 0 1px 1px oklch(0 0 0 / 0.08),
+    inset 0 -1px 1px -0.5px oklch(1 0 0 / 0.75);
+
+  --inset-shadow-md:
+    inset 0 1.5px 1.5px oklch(0 0 0 / 0.08),
+    inset 0 -1px 1px -0.5px oklch(1 0 0 / 0.75);
+
+  --inset-shadow-lg:
+    inset 0 2px 2px oklch(0 0 0 / 0.08),
+    inset 0 -1px 1px -0.5px oklch(1 0 0 / 0.75);
+}
+
+.dark {
+  --background: oklch(0.24 0 0);
+  --foreground: oklch(0.96 0 0);
+
+  --secondary: oklch(0.28 0 0);
+  --secondary-foreground: oklch(0.9 0 0);
+
+  --muted: oklch(0.32 0 0);
+  --muted-foreground: oklch(0.65 0 0);
+
+  --inset: oklch(0.2 0 0);
+  --border: oklch(1 0 0 / 5%);
+
+  --shadow-xs:
+    0 1px 3px oklch(0 0 0 / 0.12), 0 1px 2px oklch(0 0 0 / 0.24),
+    inset 0 1px 1px -0.5px oklch(1 0 0 / 0.04);
+
+  --shadow-sm:
+    0 1px 3px oklch(0 0 0 / 0.12), 0 1px 2px oklch(0 0 0 / 0.24),
+    inset 0 1.5px 1.5px -0.75px oklch(1 0 0 / 0.05);
+
+  --shadow-md:
+    0 3px 6px oklch(0 0 0 / 0.12), 0 2px 4px oklch(0 0 0 / 0.24),
+    inset 0 2px 2px -1px oklch(1 0 0 / 0.06);
+
+  --shadow-lg:
+    0 6px 12px oklch(0 0 0 / 0.12), 0 4px 6px oklch(0 0 0 / 0.24),
+    inset 0 2.5px 2.5px -1.25px oklch(1 0 0 / 0.07);
+
+  --shadow-xl:
+    0 12px 20px oklch(0 0 0 / 0.12), 0 8px 10px oklch(0 0 0 / 0.24),
+    inset 0 3px 3px -1.5px oklch(1 0 0 / 0.08);
+
+  --inset-shadow-sm:
+    inset 0 1px 1px oklch(0 0 0 / 0.3),
+    inset 0 -1px 1px -0.5px oklch(1 0 0 / 0.04);
+
+  --inset-shadow-md:
+    inset 0 1.5px 1.5px oklch(0 0 0 / 0.3),
+    inset 0 -1px 1px -0.5px oklch(1 0 0 / 0.05);
+
+  --inset-shadow-lg:
+    inset 0 2px 2px oklch(0 0 0 / 0.3),
+    inset 0 -1px 1px -0.5px oklch(1 0 0 / 0.06);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+
+  --color-accent: var(--accent);
+
+  --color-danger: var(--danger);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+
+  --color-inset: var(--inset);
+  --color-border: var(--border);
+
+  --radius-xs: calc(var(--radius) - 4px);
+  --radius-sm: calc(var(--radius) - 2px);
+  --radius-md: var(--radius);
+  --radius-lg: calc(var(--radius) + 2px);
+  --radius-xl: calc(var(--radius) + 4px);
+
+  --shadow-xs: var(--shadow-xs);
+  --shadow-sm: var(--shadow-sm);
+  --shadow-md: var(--shadow-md);
+  --shadow-lg: var(--shadow-lg);
+  --shadow-xl: var(--shadow-xl);
+
+  --inset-shadow-sm: var(--inset-shadow-sm);
+  --inset-shadow-md: var(--inset-shadow-md);
+  --inset-shadow-lg: var(--inset-shadow-lg);
+
+  --wrapper-xs: 12rem;
+  --wrapper-sm: 24rem;
+  --wrapper-md: 36rem;
+  --wrapper-lg: 48rem;
+  --wrapper-xl: 60rem;
+
+  --breakpoint-xs: 30rem;
+
+  --animate-accordion-down: accordion-down 0.3s var(--ease-out);
+  --animate-accordion-up: accordion-up 0.3s var(--ease-out);
+
+  @keyframes accordion-down {
+    from {
+      height: 0;
+    }
+    to {
+      height: var(--accordion-panel-height);
+    }
+  }
+
+  @keyframes accordion-up {
+    from {
+      height: var(--accordion-panel-height);
+    }
+    to {
+      height: 0;
+    }
+  }
+}
+
+@layer base {
+  ::selection {
+    @apply bg-accent/25;
+  }
+
+  html {
+    @apply scroll-pt-4 scroll-smooth scrollbar-4;
+  }
+
+  body {
+    @apply min-h-screen bg-background text-foreground;
+    @apply antialiased overflow-x-hidden;
+  }
+
+  a {
+    @apply outline-accent/50 focus-visible:outline-1;
+    @apply duration-250 ease-out;
+    @apply rounded-[1px];
+  }
+
+  .recharts-surface {
+    @apply focus-ring rounded-sm;
+
+    &:focus {
+      outline: none;
+    }
+  }
+}
+
+@utility text-responsive {
+  @apply text-base md:text-sm;
+}
+
+@utility link {
+  @apply text-muted-foreground hover:text-accent;
+  @apply underline-offset-3 underline;
+  @apply decoration-current decoration-1;
+}
+
+@utility input {
+  @apply h-9 flex w-full;
+  @apply text-secondary-foreground placeholder:text-muted-foreground text-responsive;
+  @apply rounded-sm border border-border bg-inset;
+  @apply px-2.5 py-1 inset-shadow-md;
+  @apply outline-none duration-250;
+  @apply disabled:opacity-50 disabled:cursor-not-allowed;
+  @apply focus-visible:border-accent focus-visible:ring-3 focus-visible:ring-accent/50;
+  @apply aria-invalid:border-danger/75 aria-invalid:text-danger/75;
+  @apply aria-invalid:ring-danger/50 aria-invalid:placeholder:text-danger/75;
+}
+
+@utility pb-mobile-nav {
+  padding-bottom: calc(4rem + env(safe-area-inset-bottom, 0px));
+}
+
+@utility focus-ring {
+  @apply focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-accent/50;
+}
+
+@utility wrapper-* {
+  @apply mx-auto w-[calc(100%-1.8rem)] xs:w-[calc(100%-4rem)] md:w-[calc(100%-6rem)] lg:w-[calc(100%-8rem)];
+  max-width: --value(--wrapper-*, integer);
+}
+
+@utility scrollbar-* {
+  &::-webkit-scrollbar {
+    width: calc(--value(number) * 2px);
+    height: calc(--value(number) * 2px);
+  }
+
+  &::-webkit-scrollbar-thumb {
+    @apply bg-border/80 rounded-full;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    @apply bg-border/90;
+  }
+}
