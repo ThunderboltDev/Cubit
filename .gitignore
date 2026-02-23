@@ -1,0 +1,26 @@
+# Dependencies
+node_modules
+
+# Build outputs
+dist
+dist-ssr
+.output
+.vinxi
+
+# Framework caches
+.nitro
+.tanstack
+.wrangler
+
+# Env files
+.env*
+
+# Local files
+*.local
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Unconfig cache
+__unconfig*
