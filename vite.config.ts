@@ -13,6 +13,12 @@ const config = defineConfig({
     tanstackRouter({ target: "react", autoCodeSplitting: true }),
     viteReact(),
   ],
+  worker: {
+    format: "es",
+  },
+  optimizeDeps: {
+    exclude: ["cubing"],
+  },
 });
 
 export default config;
