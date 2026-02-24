@@ -19,6 +19,11 @@ const config = defineConfig({
   optimizeDeps: {
     exclude: ["cubing"],
   },
+  build: {
+    rollupOptions: {
+      external: [],
+    },
+  },
 });
 
 export default config;
