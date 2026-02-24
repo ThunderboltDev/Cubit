@@ -21,7 +21,15 @@ const config = defineConfig({
   },
   build: {
     rollupOptions: {
-      external: [],
+      output: {
+        experimentalMinChunkSize: 0,
+        entryFileNames: (chunk) => {
+          if (chunk.name.includes("search-worker-entry")) {
+            return "assets/search-worker-entry.js";
+          }
+          return "assets/[name]-[hash].js";
+        },
+      },
     },
   },
 });
